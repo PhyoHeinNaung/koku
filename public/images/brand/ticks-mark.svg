@@ -1,0 +1,6 @@
+<svg width="192" height="192" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>ticks hourglass mark</title>
+  <rect x="3" y="3" width="42" height="42" rx="12" fill="#FF5D0A"/>
+  <path d="M13.5 12.75h18.25L24.8 21.9a3.35 3.35 0 0 0 0 4.2l6.95 9.15H13.5l6.95-9.15a3.35 3.35 0 0 0 0-4.2l-6.95-9.15Z" stroke="#171513" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m35 18.5-4.25 5.5L35 29.5" stroke="#171513" stroke-width="3.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

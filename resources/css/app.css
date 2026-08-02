@@ -1,0 +1,150 @@
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@plugin '@tailwindcss/forms';
+@plugin "daisyui" {
+    themes: ticksadmin --default, ticksadmindark --prefersdark;
+}
+@plugin "daisyui/theme" {
+    name: "ticksadmin";
+    default: true;
+    prefersdark: false;
+    color-scheme: light;
+
+    --color-base-100: #fffdfb;
+    --color-base-200: #f4f1ed;
+    --color-base-300: #ded9d2;
+    --color-base-content: #1d1b19;
+    --color-primary: #f45a0a;
+    --color-primary-content: #ffffff;
+    --color-secondary: #2a2724;
+    --color-secondary-content: #ffffff;
+    --color-accent: #ff5d0a;
+    --color-accent-content: #ffffff;
+    --color-neutral: #171513;
+    --color-neutral-content: #fffaf6;
+    --color-info: #287ca3;
+    --color-info-content: #ffffff;
+    --color-success: #18835a;
+    --color-success-content: #ffffff;
+    --color-warning: #b97018;
+    --color-warning-content: #ffffff;
+    --color-error: #d2473f;
+    --color-error-content: #ffffff;
+
+    --radius-selector: 0.625rem;
+    --radius-field: 0.625rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+
+    --admin-canvas: #efebe6;
+    --admin-sidebar: #fffdfb;
+    --admin-surface: #fffdfb;
+    --admin-surface-raised: #ffffff;
+    --admin-surface-soft: #f7f3ef;
+    --admin-surface-sunken: #ece7e1;
+    --admin-border: #ded9d2;
+    --admin-border-strong: #c9c1b8;
+    --admin-highlight: rgb(255 255 255 / 0.92);
+    --admin-accent-soft: rgb(255 93 10 / 0.11);
+    --admin-accent-glow: rgb(255 93 10 / 0.22);
+    --admin-shadow-panel: 0 1px 2px rgb(38 29 22 / 0.08), 0 12px 32px rgb(38 29 22 / 0.07);
+    --admin-shadow-raised: 0 1px 0 rgb(255 255 255 / 0.95) inset, 0 8px 24px rgb(38 29 22 / 0.10);
+    --admin-shadow-control: 0 1px 0 rgb(255 255 255 / 0.88) inset, 0 2px 5px rgb(38 29 22 / 0.10);
+}
+@plugin "daisyui/theme" {
+    name: "ticksadmindark";
+    default: false;
+    prefersdark: true;
+    color-scheme: dark;
+
+    --color-base-100: #181818;
+    --color-base-200: #0d0d0d;
+    --color-base-300: #2b2a29;
+    --color-base-content: #f4f2ef;
+    --color-primary: #ff5d0a;
+    --color-primary-content: #ffffff;
+    --color-secondary: #e9e4df;
+    --color-secondary-content: #151413;
+    --color-accent: #ff5d0a;
+    --color-accent-content: #ffffff;
+    --color-neutral: #111111;
+    --color-neutral-content: #f7f4f1;
+    --color-info: #62a8c7;
+    --color-info-content: #07161d;
+    --color-success: #58b979;
+    --color-success-content: #06170d;
+    --color-warning: #d4a348;
+    --color-warning-content: #1c1202;
+    --color-error: #df665e;
+    --color-error-content: #200605;
+
+    --radius-selector: 0.625rem;
+    --radius-field: 0.625rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+
+    --admin-canvas: #0a0a0a;
+    --admin-sidebar: #141414;
+    --admin-surface: #171717;
+    --admin-surface-raised: #1c1c1c;
+    --admin-surface-soft: #20201f;
+    --admin-surface-sunken: #101010;
+    --admin-border: #2c2b2a;
+    --admin-border-strong: #3a3836;
+    --admin-highlight: rgb(255 255 255 / 0.07);
+    --admin-accent-soft: rgb(255 93 10 / 0.13);
+    --admin-accent-glow: rgb(255 93 10 / 0.30);
+    --admin-shadow-panel: 0 1px 0 rgb(255 255 255 / 0.035) inset, 0 18px 40px rgb(0 0 0 / 0.28);
+    --admin-shadow-raised: 0 1px 0 rgb(255 255 255 / 0.07) inset, 0 8px 22px rgb(0 0 0 / 0.34);
+    --admin-shadow-control: 0 1px 0 rgb(255 255 255 / 0.09) inset, 0 2px 7px rgb(0 0 0 / 0.38);
+}
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: Figtree, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-admin: Manrope, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --shadow-admin-panel: var(--admin-shadow-panel);
+    --shadow-admin-raised: var(--admin-shadow-raised);
+    --shadow-admin-control: var(--admin-shadow-control);
+}
+
+@layer base {
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-base-300, currentcolor);
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+.range-thumb::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    appearance: none;
+    background: transparent;
+    border-radius: 9999px;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.range-thumb::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: transparent;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    pointer-events: all;
+}
