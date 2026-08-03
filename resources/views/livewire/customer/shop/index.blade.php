@@ -1,330 +1,275 @@
-<div>
+<div class="bg-[var(--koku-white)]" x-data="{ showFilters: @entangle('showFilters'), sortOpen: false }"
+    x-effect="document.body.classList.toggle('overflow-hidden', showFilters)">
+    @php
+        $sortOptions = [
+            'date_desc' => 'Newest first',
+            'date_asc' => 'Oldest first',
+            'alpha_asc' => 'Name, A–Z',
+            'alpha_desc' => 'Name, Z–A',
+            'price_asc' => 'Price, low to high',
+            'price_desc' => 'Price, high to low',
+        ];
+    @endphp
 
-    {{-- Hero banner --}}
-    <section class="relative h-40 sm:h-48 lg:h-56 flex items-center overflow-hidden">
-        <img src="https://www.casio.com/content/casio/locales/intl/en/products/watches/casio/standard/vintage/aq-230/_jcr_content/root/responsivegrid/container_1479889198/container_2106131580/teaser_copy_copy_cop.casiocoreimg.jpeg/1769996532300/kv.jpeg"
-            alt="Shop all watches" class="absolute inset-0 w-full h-full object-cover">
-        <div class="absolute inset-0 bg-black/20"></div>
-
-        {{-- Breadcrumb --}}
-        <div class="relative z-10 px-6 sm:px-10 lg:px-20 xl:px-28 w-full">
-            <nav class="text-xs text-white/70 mb-2 tracking-widest uppercase">
-                <a href="{{ url('/') }}" class="hover:text-white">Home</a>
-                <span class="mx-2">/</span>
-                <span class="text-white">Shop</span>
+    <header class="bg-[var(--koku-white)]">
+        <div class="koku-shell pb-10 pt-8 sm:pb-12 sm:pt-10">
+            <nav class="flex items-center justify-center gap-7 overflow-x-auto whitespace-nowrap py-4 text-xs text-[var(--koku-muted)] sm:gap-14 sm:text-sm"
+                aria-label="Watch categories">
+                <a href="{{ route('shop.index') }}"
+                    class="relative font-medium text-[var(--koku-ink)] after:absolute after:-top-3 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-[var(--koku-indigo)]">All
+                    watches</a>
+                <a href="{{ route('shop.index', ['sort' => 'date_desc']) }}"
+                    class="transition-colors hover:text-[var(--koku-indigo)]">New</a>
+                <a href="{{ route('shop.index', ['movements' => ['automatic']]) }}"
+                    class="transition-colors hover:text-[var(--koku-indigo)]">Automatic</a>
+                <a href="{{ route('shop.index', ['movements' => ['quartz']]) }}"
+                    class="transition-colors hover:text-[var(--koku-indigo)]">Quartz</a>
+                <a href="{{ route('shop.index', ['movements' => ['mechanical']]) }}"
+                    class="transition-colors hover:text-[var(--koku-indigo)]">Mechanical</a>
             </nav>
-            <h1 class="text-2xl lg:text-3xl font-bold text-white">All Watches</h1>
-        </div>
-    </section>
-
-    <div class="px-6 sm:px-10 lg:px-20 xl:px-28 py-8 max-w-[1800px] mx-auto"
-        x-data="{ showFilters: @entangle('showFilters') }"
-        x-effect="document.body.classList.toggle('overflow-hidden', showFilters)">
-
-        @php
-            $sortOptions = [
-                'alpha_asc' => 'Alphabetically, A-Z',
-                'alpha_desc' => 'Alphabetically, Z-A',
-                'price_asc' => 'Price, low to high',
-                'price_desc' => 'Price, high to low',
-                'date_asc' => 'Date, old to new',
-                'date_desc' => 'Date, new to old',
-            ];
-        @endphp
-
-        {{-- Controls bar --}}
-        <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center gap-4">
-                <p class="text-sm text-gray-900">
-                    <span class="font-semibold">{{ $products->total() }}</span>
-                    {{ \Illuminate\Support\Str::plural('product', $products->total()) }}
-                </p>
-
-                <span class="w-px h-4 bg-gray-300"></span>
-
-                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                    <button type="button" @click="open = !open"
-                        class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-500 whitespace-nowrap">
-                        <span>{{ $sort === 'date_desc' ? 'Sort by' : ($sortOptions[$sort] ?? 'Sort by') }}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 shrink-0 transition-transform duration-200" :class="open ? 'rotate-180' : ''"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-150"
-                        x-transition:enter-start="opacity-0 -translate-y-1"
-                        x-transition:enter-end="opacity-100 translate-y-0"
-                        x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="absolute z-30 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-1">
-                        @foreach ($sortOptions as $value => $label)
-                            <button type="button" wire:click="$set('sort', '{{ $value }}')" @click="open = false"
-                                class="w-full text-left px-4 py-2.5 text-sm transition-colors
-                                                                            {{ $sort === $value ? 'text-gray-900 font-medium bg-gray-50' : 'text-gray-600 hover:bg-gray-50' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
+            <div class="hidden">
+                <div>
+                    <nav class="koku-eyebrow text-[var(--koku-muted)]" aria-label="Breadcrumb">
+                        <a href="{{ route('home') }}" class="hover:text-[var(--koku-indigo)]">Koku</a>
+                        <span class="mx-2 text-[var(--koku-line)]">/</span>
+                        <span>Watches</span>
+                    </nav>
+                    <h1 class="mt-5 font-serif text-3xl font-medium tracking-[-0.04em] sm:text-4xl">
+                        @if ($search !== '')
+                            Results for “{{ $search }}”
+                        @else
+                            The collection
+                        @endif
+                    </h1>
+                </div>
+                <p class="mx-auto mt-4 max-w-lg text-xs leading-6 text-[var(--koku-muted)]">Watches selected for
+                    clarity, proportion and enduring use.</p>
+            </div>
+            <div class="relative mt-6 h-40 overflow-hidden bg-[#f4f5f7] sm:h-48 lg:h-52">
+                <div class="absolute -right-16 -top-36 h-[30rem] w-[54rem] rotate-[-7deg] rounded-[50%] bg-white shadow-[0_30px_70px_rgba(25,38,64,.12)]"></div>
+                <div class="absolute right-[12%] top-8 h-36 w-[38%] rotate-[5deg] rounded-[50%] border border-[#e7e9ee] bg-gradient-to-b from-white to-[#eceff4] shadow-[0_25px_45px_rgba(25,38,64,.08)]"></div>
+                <div class="absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center px-6 sm:px-10 lg:px-14">
+                    <p class="text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--koku-indigo)]">The Koku edit</p>
+                    <h1 class="mt-3 font-serif text-2xl font-medium tracking-[-0.03em] text-[var(--koku-ink)] sm:text-4xl">Objects for measured time.</h1>
+                    <p class="mt-3 hidden max-w-sm text-xs leading-5 text-[var(--koku-muted)] sm:block">Quiet forms, precise movements and enduring materials.</p>
                 </div>
             </div>
+        </div>
+    </header>
 
+    <div class="bg-[var(--koku-white)]">
+        <div
+            class="koku-shell relative flex min-h-20 items-center justify-between gap-4 border-b border-[var(--koku-line)]">
             <button type="button" @click="showFilters = true"
-                class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                class="group flex h-14 items-center gap-3 text-[10px] font-medium uppercase tracking-[0.12em]">
+                <svg class="size-4 text-[var(--koku-indigo)]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.5">
+                    <path d="M4 7h16M7 12h10M10 17h4" />
                 </svg>
-                Filter
+                Filter <span class="hidden text-[var(--koku-muted)] sm:inline">the collection</span>
                 @if ($this->activeFilterCount > 0)
                     <span
-                        class="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gray-900 text-white text-[10px]">
-                        {{ $this->activeFilterCount }}
-                    </span>
+                        class="flex size-5 items-center justify-center bg-[var(--koku-indigo)] text-[9px] text-white">{{ $this->activeFilterCount }}</span>
                 @endif
             </button>
+
+            <div class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                <h1 class="font-serif text-xl font-medium sm:text-2xl">@if ($search !== '') Results @else All watches
+                @endif</h1>
+                <p class="mt-1 text-[9px] uppercase tracking-[0.14em] text-[var(--koku-muted)]">{{ $products->total() }}
+                    pieces</p>
+            </div>
+
+            <div class="relative" @click.outside="sortOpen = false">
+                <button type="button" @click="sortOpen = !sortOpen"
+                    class="flex h-14 items-center gap-3 text-[10px] font-medium uppercase tracking-[0.12em]">
+                    <span class="hidden text-[var(--koku-muted)] sm:inline">Sort</span>
+                    <span>{{ $sortOptions[$sort] ?? 'Newest first' }}</span>
+                    <svg class="size-3 transition-transform" :class="sortOpen && 'rotate-180'" viewBox="0 0 16 16"
+                        fill="none" stroke="currentColor">
+                        <path d="m3 6 5 5 5-5" />
+                    </svg>
+                </button>
+                <div x-show="sortOpen" x-transition x-cloak
+                    class="absolute right-0 top-full w-64 border border-[var(--koku-line)] bg-[var(--koku-white)] p-2 shadow-xl">
+                    @foreach ($sortOptions as $value => $label)
+                        <button type="button" wire:click="$set('sort', '{{ $value }}')" @click="sortOpen = false"
+                            class="flex w-full items-center justify-between px-3 py-3 text-left text-sm transition-colors hover:bg-[var(--koku-paper)] {{ $sort === $value ? 'text-[var(--koku-indigo)]' : 'text-[var(--koku-muted)]' }}">
+                            {{ $label }}
+                            @if ($sort === $value)<span aria-hidden="true">—</span>@endif
+                        </button>
+                    @endforeach
+                </div>
+            </div>
         </div>
+    </div>
 
-        {{-- Grid --}}
+    @if ($this->activeFilterCount > 0 || $search !== '')
+        <div class="border-b border-[var(--koku-line)] bg-[var(--koku-white)]">
+            <div class="koku-shell flex flex-wrap items-center gap-2 py-4">
+                @if ($search !== '')
+                    <button wire:click="$set('search', '')"
+                        class="flex items-center gap-2 border border-[var(--koku-line)] px-3 py-2 text-xs">Search: {{ $search }}
+                        <span>×</span></button>
+                @endif
+                @foreach ($genders as $value)<button
+                    wire:click="$set('genders', {{ Js::from(array_values(array_diff($genders, [$value]))) }})"
+                    class="flex items-center gap-2 border border-[var(--koku-line)] px-3 py-2 text-xs capitalize">{{ $value }}
+                <span>×</span></button>@endforeach
+                @foreach ($movements as $value)<button
+                    wire:click="$set('movements', {{ Js::from(array_values(array_diff($movements, [$value]))) }})"
+                    class="flex items-center gap-2 border border-[var(--koku-line)] px-3 py-2 text-xs capitalize">{{ $value }}
+                <span>×</span></button>@endforeach
+                @foreach ($brands as $value)<button
+                    wire:click="$set('brands', {{ Js::from(array_values(array_diff($brands, [$value]))) }})"
+                    class="flex items-center gap-2 border border-[var(--koku-line)] px-3 py-2 text-xs capitalize">{{ str_replace('-', ' ', $value) }}
+                <span>×</span></button>@endforeach
+                @foreach ($categories as $value)<button
+                    wire:click="$set('categories', {{ Js::from(array_values(array_diff($categories, [$value]))) }})"
+                    class="flex items-center gap-2 border border-[var(--koku-line)] px-3 py-2 text-xs capitalize">{{ str_replace('-', ' ', $value) }}
+                <span>×</span></button>@endforeach
+                @if ($this->activeFilterCount > 0)<button wire:click="clearFilters"
+                class="ml-2 text-xs text-[var(--koku-muted)] underline underline-offset-4">Clear filters</button>@endif
+            </div>
+        </div>
+    @endif
+
+    <main class="koku-shell py-12 sm:py-16 lg:py-20">
         @if ($products->isEmpty())
-            <p class="text-gray-400 text-center py-20">No products match your filters.</p>
+            <div
+                class="flex min-h-[28rem] flex-col items-center justify-center border-y border-[var(--koku-line)] text-center">
+                <span class="font-serif text-5xl text-[var(--koku-indigo)]">零</span>
+                <h2 class="mt-6 font-serif text-3xl font-medium tracking-[-0.04em]">Nothing in this edit.</h2>
+                <p class="mt-3 max-w-sm text-sm leading-6 text-[var(--koku-muted)]">Adjust the filters or clear the search
+                    to return to the complete collection.</p>
+                @if ($search !== '')
+                    <button type="button" wire:click="$set('search', '')" class="koku-link mt-8">Clear search
+                        <span>→</span></button>
+                @else
+                    <button type="button" wire:click="clearFilters" class="koku-link mt-8">Clear filters <span>→</span></button>
+                @endif
+            </div>
         @else
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <div class="grid grid-cols-2 gap-x-4 gap-y-14 sm:gap-x-8 sm:gap-y-20 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-10">
                 @foreach ($products as $product)
-                    <a href="{{ route('shop.product', $product->slug) }}" class="group block"
-                        wire:key="product-{{ $product->id }}">
-                        <div class="relative aspect-square bg-gray-100 overflow-hidden mb-4">
-                            <button type="button" wire:click.stop.prevent="toggleWishlist({{ $product->id }})"
-                                class="absolute top-3 right-3 z-10 p-2 bg-white/90 rounded-full shadow hover:bg-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                    fill="{{ in_array($product->id, $this->wishlistedProductIds) ? 'currentColor' : 'none' }}"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-
-                                </svg>
-                            </button>
-                            {{-- @if ($product->is_featured)
-                            <span
-                                class="absolute top-3 left-3 z-10 bg-white px-3 py-1 text-[10px] font-semibold tracking-widest uppercase text-gray-900">
-                                Featured
-                            </span>
-                            @endif --}}
+                    <article wire:key="product-{{ $product->id }}" class="group min-w-0 text-center">
+                        <a href="{{ route('shop.product', $product->slug) }}" class="relative block h-60 sm:h-72 lg:h-80">
                             @if ($product->primary_image_url)
-                                <img src="{{ $product->primary_image_url }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" loading="lazy"
+                                    class="koku-product-image h-full w-full object-contain px-3 py-2 transition-transform duration-500 group-hover:scale-[1.025] sm:px-5">
+                            @else
+                                <div class="flex h-full items-center justify-center font-serif text-3xl text-[var(--koku-line)]">
+                                    Koku</div>
                             @endif
+                            @if ($product->is_featured)
+                                <span
+                                    class="absolute left-0 top-0 text-[8px] font-medium uppercase tracking-[0.15em] text-[var(--koku-indigo)]">Selected</span>
+                            @endif
+                            <button type="button" wire:click.stop.prevent="toggleWishlist({{ $product->id }})"
+                                aria-label="Toggle {{ $product->name }} in wishlist"
+                                class="absolute right-0 top-0 flex size-8 items-center justify-center text-[var(--koku-ink)] transition-colors hover:text-[var(--koku-indigo)]">
+                                <svg class="size-4" fill="{{ in_array($product->id, $this->wishlistedProductIds) ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 4.876 9.623 3.75 7.687 3.75 5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+                            </button>
+                        </a>
+                        <div class="mt-5 px-1">
+                            <div class="text-center">
+                                <div class="min-w-0">
+                                    <p
+                                        class="truncate text-[8px] font-medium uppercase tracking-[0.14em] text-[var(--koku-muted)]">
+                                        {{ $product->brand?->name }}</p>
+                                    <h2 class="mt-2 truncate text-xs font-medium sm:text-sm">{{ $product->name }}</h2>
+                                </div>
+                                @if ($product->variants_min_price)<span
+                                class="mt-2 block text-[11px] text-[var(--koku-muted)]">${{ number_format($product->variants_min_price, 2) }}</span>@endif
+                            </div>
                         </div>
-
-                        <p class="text-[11px] tracking-widest uppercase text-gray-400 mb-1">
-                            {{ $product->brand->name }}
-                        </p>
-                        <h3
-                            class="text-sm font-semibold uppercase tracking-wide text-gray-900 leading-snug mb-1.5 line-clamp-2">
-                            {{ $product->name }}
-                        </h3>
-                        <p class="text-sm text-gray-900 font-medium">
-                            @if ($product->variants_min_price)
-                                From ${{ number_format($product->variants_min_price, 2) }}
-                            @endif
-                        </p>
-                    </a>
+                    </article>
                 @endforeach
             </div>
 
-            <div class="mt-12">
-                {{ $products->links() }}
-            </div>
+            @if ($products->hasPages())
+                <div class="mt-20 border-t border-[var(--koku-line)] pt-8 lg:mt-28">{{ $products->links() }}</div>
+            @endif
         @endif
+    </main>
 
-        {{-- Filter drawer backdrop --}}
-        <div x-show="showFilters" x-transition.opacity x-cloak @click="showFilters = false"
-            class="fixed inset-0 bg-black/40 z-40"></div>
-
-        {{-- Filter drawer panel --}}
-        <div x-show="showFilters" x-cloak @keydown.escape.window="showFilters = false"
-            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="translate-x-full"
-            x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
-            class="fixed top-24 bottom-4 right-4 w-full max-w-md bg-white z-40 flex flex-col rounded-2xl shadow-2xl overflow-hidden">
-
-            <div class="flex items-center justify-between px-6 h-20 border-b border-gray-200 shrink-0">
-                <h2 class="text-lg font-semibold text-gray-900">Filter your search</h2>
-                <div class="flex items-center gap-4">
-                    @if ($this->activeFilterCount > 0)
-                        <button type="button" wire:click="clearFilters"
-                            class="text-sm text-gray-500 hover:text-gray-900 underline">
-                            Reset
-                        </button>
-                    @endif
-                    <button type="button" @click="showFilters = false" class="p-2 border border-gray-200 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
+    <div x-show="showFilters" x-transition.opacity x-cloak @click="showFilters = false"
+        class="fixed inset-0 z-[60] bg-[#11130f]/55"></div>
+    <aside x-show="showFilters" x-cloak @keydown.escape.window="showFilters = false"
+        x-transition:enter="transition duration-300 ease-out" x-transition:enter-start="translate-x-full"
+        x-transition:enter-end="translate-x-0" x-transition:leave="transition duration-200 ease-in"
+        x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+        class="fixed inset-y-0 right-0 z-[70] flex w-full max-w-lg flex-col bg-[var(--koku-white)] text-[var(--koku-ink)]">
+        <div class="flex h-20 shrink-0 items-center justify-between border-b border-[var(--koku-line)] px-6 sm:px-8">
+            <div>
+                <p class="koku-eyebrow text-[var(--koku-indigo)]">Refine</p>
+                <h2 class="mt-1 font-serif text-xl font-medium">The collection</h2>
             </div>
-
-            <div class="flex-1 overflow-y-auto px-6 py-6 space-y-8"
-                x-data="{ open: { price: true, gender: true, brand: true, category: false, movement: false } }">
-
-                {{-- Price --}}
-                <div class="border-b border-gray-100 pb-6" x-data="{
-                    min: @entangle('minPrice'),
-                    max: @entangle('maxPrice'),
-                    floor: {{ $priceFloor }},
-                    ceil: {{ $priceCeil }},
-                    timer: null,
-                    pct(v) { return this.ceil === this.floor ? 0 : ((v - this.floor) / (this.ceil - this.floor)) * 100 },
-                    sync() {
-                        clearTimeout(this.timer);
-                        this.timer = setTimeout(() => {
-                            $wire.set('minPrice', this.min);
-                            $wire.set('maxPrice', this.max);
-                        }, 400);
-                    },
-                }">
-                    <button type="button" @click="open.price = !open.price"
-                        class="w-full flex items-center justify-between">
-                        <span class="text-base font-semibold text-gray-900">Price</span>
-                        <span class="text-xl text-gray-400" x-text="open.price ? '−' : '+'"></span>
-                    </button>
-
-                    <div x-show="open.price" x-collapse class="pt-6">
-                        <div class="relative h-1 bg-gray-200 rounded-full mb-6">
-                            <div class="absolute h-1 bg-gray-900 rounded-full"
-                                :style="`left: ${pct(min)}%; right: ${100 - pct(max)}%`"></div>
-                            <span
-                                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3 w-3 rounded-full bg-white border-2 border-gray-900"
-                                :style="`left: ${pct(min)}%`"></span>
-                            <span
-                                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3 w-3 rounded-full bg-white border-2 border-gray-900"
-                                :style="`left: ${pct(max)}%`"></span>
-
-                            <input type="range" :min="floor" :max="ceil" step="1" x-model.number="min"
-                                @input="if (min > max) min = max; sync()"
-                                class="range-thumb absolute inset-0 w-full h-1 appearance-none bg-transparent pointer-events-none">
-                            <input type="range" :min="floor" :max="ceil" step="1" x-model.number="max"
-                                @input="if (max < min) max = min; sync()"
-                                class="range-thumb absolute inset-0 w-full h-1 appearance-none bg-transparent pointer-events-none">
-                        </div>
-
-                        <p class="text-sm text-gray-500">
-                            From <span class="text-gray-900 font-medium underline underline-offset-4"
-                                x-text="'$' + min"></span>
-                            to <span class="text-gray-900 font-medium underline underline-offset-4"
-                                x-text="'$' + max"></span>
-                        </p>
-                    </div>
-                </div>
-
-                {{-- Gender --}}
-                <div class="border-b border-gray-100 pb-6">
-                    <button type="button" @click="open.gender = !open.gender"
-                        class="w-full flex items-center justify-between">
-                        <span class="text-base font-semibold text-gray-900">Gender @if(count($genders))
-                        ({{ count($genders) }}) @endif</span>
-                        <span class="text-xl text-gray-400" x-text="open.gender ? '−' : '+'"></span>
-                    </button>
-                    <div x-show="open.gender" x-collapse class="pt-4 space-y-3">
-                        @foreach (['men' => "Man", 'women' => "Woman", 'unisex' => 'Unisex'] as $value => $label)
-                            <label wire:key="gender-{{ $value }}"
-                                class="flex items-center justify-between gap-3 text-sm text-gray-700 cursor-pointer">
-                                <span class="flex items-center gap-3">
-                                    <input type="checkbox" wire:model.live="genders" value="{{ $value }}"
-                                        class="rounded border-gray-300 text-gray-900 focus:ring-gray-900">
-                                    {{ $label }}
-                                </span>
-                                <span class="text-gray-400">({{ $genderCounts[$value] ?? 0 }})</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Brand --}}
-                <div class="border-b border-gray-100 pb-6">
-                    <button type="button" @click="open.brand = !open.brand"
-                        class="w-full flex items-center justify-between">
-                        <span class="text-base font-semibold text-gray-900">Brand @if(count($brands))
-                        ({{ count($brands) }}) @endif</span>
-                        <span class="text-xl text-gray-400" x-text="open.brand ? '−' : '+'"></span>
-                    </button>
-                    <div x-show="open.brand" x-collapse class="pt-4 space-y-3">
-                        @foreach ($brandOptions as $b)
-                            <label wire:key="brand-{{ $b->id }}"
-                                class="flex items-center justify-between gap-3 text-sm text-gray-700 cursor-pointer">
-                                <span class="flex items-center gap-3">
-                                    <input type="checkbox" wire:model.live="brands" value="{{ $b->slug }}"
-                                        class="rounded border-gray-300 text-gray-900 focus:ring-gray-900">
-                                    {{ $b->name }}
-                                </span>
-                                <span class="text-gray-400">({{ $brandCounts[$b->slug] ?? 0 }})</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Category --}}
-                <div class="border-b border-gray-100 pb-6">
-                    <button type="button" @click="open.category = !open.category"
-                        class="w-full flex items-center justify-between">
-                        <span class="text-base font-semibold text-gray-900">Style @if(count($categories))
-                        ({{ count($categories) }}) @endif</span>
-                        <span class="text-xl text-gray-400" x-text="open.category ? '−' : '+'"></span>
-                    </button>
-                    <div x-show="open.category" x-collapse class="pt-4 space-y-3">
-                        @foreach ($categoryOptions as $c)
-                            <label wire:key="category-{{ $c->id }}"
-                                class="flex items-center justify-between gap-3 text-sm text-gray-700 cursor-pointer">
-                                <span class="flex items-center gap-3">
-                                    <input type="checkbox" wire:model.live="categories" value="{{ $c->slug }}"
-                                        class="rounded border-gray-300 text-gray-900 focus:ring-gray-900">
-                                    {{ $c->name }}
-                                </span>
-                                <span class="text-gray-400">({{ $categoryCounts[$c->slug] ?? 0 }})</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Movement --}}
-                <div class="pb-6">
-                    <button type="button" @click="open.movement = !open.movement"
-                        class="w-full flex items-center justify-between">
-                        <span class="text-base font-semibold text-gray-900">Movement @if(count($movements))
-                        ({{ count($movements) }}) @endif</span>
-                        <span class="text-xl text-gray-400" x-text="open.movement ? '−' : '+'"></span>
-                    </button>
-                    <div x-show="open.movement" x-collapse class="pt-4 space-y-3">
-                        @foreach (['automatic' => 'Automatic', 'quartz' => 'Quartz', 'mechanical' => 'Mechanical', 'chronograph' => 'Chronograph', 'smart' => 'Smart'] as $value => $label)
-                            <label wire:key="movement-{{ $value }}"
-                                class="flex items-center justify-between gap-3 text-sm text-gray-700 cursor-pointer">
-                                <span class="flex items-center gap-3">
-                                    <input type="checkbox" wire:model.live="movements" value="{{ $value }}"
-                                        class="rounded border-gray-300 text-gray-900 focus:ring-gray-900">
-                                    {{ $label }}
-                                </span>
-                                <span class="text-gray-400">({{ $movementCounts[$value] ?? 0 }})</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
+            <div class="flex items-center gap-4">
+                @if ($this->activeFilterCount > 0)<button type="button" wire:click="clearFilters"
+                class="text-xs underline underline-offset-4 text-[var(--koku-muted)]">Reset</button>@endif
+                <button type="button" @click="showFilters = false" class="koku-icon-button"
+                    aria-label="Close filters"><svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="m5 5 14 14M19 5 5 19" />
+                    </svg></button>
             </div>
-
-            <div class="p-6 border-t border-gray-200 shrink-0">
-                <button type="button" @click="showFilters = false"
-                    class="w-full py-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">
-                    Show {{ $products->total() }} products
-                </button>
-            </div>
-
         </div>
 
-    </div>
+        <div class="flex-1 overflow-y-auto px-6 sm:px-8"
+            x-data="{ open: { price: true, gender: true, brand: true, category: false, movement: false } }">
+            <div class="border-b border-[var(--koku-line)] py-7"
+                x-data="{ min: @entangle('minPrice'), max: @entangle('maxPrice'), floor: {{ $priceFloor }}, ceil: {{ $priceCeil }}, timer: null, pct(v) { return this.ceil === this.floor ? 0 : ((v - this.floor) / (this.ceil - this.floor)) * 100 }, sync() { clearTimeout(this.timer); this.timer = setTimeout(() => { $wire.set('minPrice', this.min); $wire.set('maxPrice', this.max) }, 400) } }">
+                <button type="button" @click="open.price = !open.price"
+                    class="flex w-full items-center justify-between font-serif text-lg"><span>Price</span><span
+                        class="text-[var(--koku-indigo)]" x-text="open.price ? '−' : '+'"></span></button>
+                <div x-show="open.price" x-collapse class="pt-7">
+                    <div class="relative mb-7 h-px bg-[var(--koku-line)]">
+                        <div class="absolute h-px bg-[var(--koku-indigo)]"
+                            :style="`left:${pct(min)}%;right:${100-pct(max)}%`"></div>
+                        <input type="range" :min="floor" :max="ceil" step="1" x-model.number="min"
+                            @input="if(min>max)min=max;sync()"
+                            class="range-thumb pointer-events-none absolute inset-0 h-px w-full appearance-none bg-transparent">
+                        <input type="range" :min="floor" :max="ceil" step="1" x-model.number="max"
+                            @input="if(max<min)max=min;sync()"
+                            class="range-thumb pointer-events-none absolute inset-0 h-px w-full appearance-none bg-transparent">
+                    </div>
+                    <div class="flex justify-between text-xs"><span>$<span x-text="min"></span></span><span>$<span
+                                x-text="max"></span></span></div>
+                </div>
+            </div>
 
+            @foreach ([
+                    ['key' => 'gender', 'title' => 'Wearer', 'selected' => count($genders), 'items' => collect(['men' => 'Men', 'women' => 'Women', 'unisex' => 'Unisex']), 'model' => 'genders', 'counts' => $genderCounts],
+                    ['key' => 'brand', 'title' => 'Maker', 'selected' => count($brands), 'items' => $brandOptions->pluck('name', 'slug'), 'model' => 'brands', 'counts' => $brandCounts],
+                    ['key' => 'category', 'title' => 'Style', 'selected' => count($categories), 'items' => $categoryOptions->pluck('name', 'slug'), 'model' => 'categories', 'counts' => $categoryCounts],
+                    ['key' => 'movement', 'title' => 'Movement', 'selected' => count($movements), 'items' => collect(['automatic' => 'Automatic', 'quartz' => 'Quartz', 'mechanical' => 'Mechanical', 'chronograph' => 'Chronograph', 'smart' => 'Smart']), 'model' => 'movements', 'counts' => $movementCounts],
+                ] as $section)
+                <div class="border-b border-[var(--koku-line)] py-7">
+                    <button type="button" @click="open.{{ $section['key'] }} = !open.{{ $section['key'] }}"
+                        class="flex w-full items-center justify-between font-serif text-lg">
+                        <span>{{ $section['title'] }} @if ($section['selected'])<small
+                        class="ml-1 font-sans text-[10px] text-[var(--koku-indigo)]">{{ $section['selected'] }}</small>@endif</span>
+                        <span class="text-[var(--koku-indigo)]" x-text="open.{{ $section['key'] }} ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="open.{{ $section['key'] }}" x-collapse class="space-y-4 pt-6">
+                        @foreach ($section['items'] as $value => $label)
+                            <label class="flex cursor-pointer items-center justify-between gap-4 text-sm">
+                                <span class="flex items-center gap-3"><input type="checkbox"
+                                        wire:model.live="{{ $section['model'] }}" value="{{ $value }}"
+                                        class="size-4 rounded-none border-[var(--koku-line)] text-[var(--koku-indigo)] focus:ring-[var(--koku-indigo)]">{{ $label }}</span>
+                                <span class="text-xs text-[var(--koku-muted)]">{{ $section['counts'][$value] ?? 0 }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="shrink-0 border-t border-[var(--koku-line)] p-6 sm:p-8">
+            <button type="button" @click="showFilters = false"
+                class="w-full bg-[var(--koku-indigo)] px-5 py-4 text-xs font-medium uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--koku-indigo-deep)]">Show
+                {{ $products->total() }} {{ Str::plural('watch', $products->total()) }}</button>
+        </div>
+    </aside>
 </div>

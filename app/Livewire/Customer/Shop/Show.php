@@ -18,6 +18,8 @@ class Show extends Component
 
     public bool $showAllVariants = false;
 
+    public int $quantity = 1;
+
     public function mount(Product $product): void
     {
         abort_unless($product->is_active, 404);
@@ -44,7 +46,27 @@ class Show extends Component
         );
 
         $this->selectedVariantId = $variantId;
+        $this->quantity = 1;
         $this->showAllVariants = false;
+    }
+
+    public function incrementQuantity(): void
+    {
+        if ($this->selectedVariant) {
+            $this->quantity = min($this->quantity + 1, $this->selectedVariant->stock_quantity);
+        }
+    }
+
+    public function decrementQuantity(): void
+    {
+        $this->quantity = max(1, $this->quantity - 1);
+    }
+
+    public function addSelectedToCart(): void
+    {
+        if ($this->selectedVariantId) {
+            $this->addToCart($this->selectedVariantId, $this->quantity);
+        }
     }
 
     public function getSelectedVariantProperty()
@@ -78,7 +100,7 @@ class Show extends Component
     public function buyNow(): void
     {
         if ($this->selectedVariantId) {
-            $this->addToCart($this->selectedVariantId);
+            $this->addToCart($this->selectedVariantId, $this->quantity);
             $this->redirectRoute('cart.index');
         }
     }
@@ -140,7 +162,20 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.customer.shop.show')
+        $relatedProducts = Product::query()
+            ->with(['brand', 'variants.images'])
+            ->withMin('variants', 'price')
+            ->where('is_active', true)
+            ->where('id', '!=', $this->product->id)
+            ->where(function ($query) {
+                $query->where('category_id', $this->product->category_id)
+                    ->orWhere('brand_id', $this->product->brand_id);
+            })
+            ->whereHas('variants', fn ($query) => $query->where('is_active', true))
+            ->take(3)
+            ->get();
+
+        return view('livewire.customer.shop.show', compact('relatedProducts'))
             ->layout('layouts.app', ['overlay' => false]);
     }
 }

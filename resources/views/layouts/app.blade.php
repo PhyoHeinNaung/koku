@@ -8,25 +8,28 @@
     <meta name="stripe-key" content="{{ config('services.stripe.key') }}">
     <script src="https://js.stripe.com/v3/"></script>
 
-    <title>{{ config('app.name', 'Ticks') }}</title>
+    <title>{{ isset($title) ? $title . ' | Koku' : 'Koku — Watches, considered' }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&family=Noto+Serif+JP:wght@500;600&display=swap"
+        rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/customer.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased">
+<body class="koku-site min-h-screen bg-[var(--koku-paper)] font-sans text-[var(--koku-ink)] antialiased">
     {{-- <x-loading-bar /> --}}
-    <x-loading-overlay />
+    {{-- <x-loading-overlay /> --}}
 
     @include('customer.partials.navigation', ['overlay' => $overlay])
 
     @isset($header)
-        <header class="bg-white shadow-sm">
+        <header class="border-b border-[var(--koku-line)] bg-[var(--koku-paper)]">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>

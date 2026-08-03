@@ -6,7 +6,7 @@
     </svg>
     @if ($count > 0)
         <span
-            class="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 w-4 rounded-full bg-gray-900 text-white text-[10px] leading-none">
+            class="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--koku-indigo)] text-[9px] leading-none text-white">
             {{ $count }}
         </span>
     @endif

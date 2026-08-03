@@ -4,8 +4,7 @@
 
 <{{ $tag }}
     {{ $href ? "href={$href}" : '' }}
-    class="relative p-2 transition-colors duration-200 hover:opacity-60"
-    :class="(scrolled || hovered) ? 'text-gray-900' : 'text-white'"
+    class="koku-icon-button relative text-[#faf8f3] hover:!bg-white/10 hover:!text-white"
     aria-label="{{ $label }}"
     {{ $attributes }}
     >

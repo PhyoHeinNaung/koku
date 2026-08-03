@@ -1,74 +1,28 @@
-<div class="px-6 sm:px-10 lg:px-16 py-16 max-w-2xl mx-auto">
+<div class="bg-[var(--koku-paper)] py-12 sm:py-20 lg:py-28">
+    <main class="koku-shell max-w-5xl">
+        @if (!$order)
+            <div class="flex min-h-[30rem] flex-col items-center justify-center border-y border-[var(--koku-line)] text-center"><span class="font-serif text-5xl text-[var(--koku-indigo)]">?</span><h1 class="mt-6 font-serif text-3xl">Order not found.</h1><p class="mt-3 text-sm text-[var(--koku-muted)]">We could not find an order associated with this payment.</p><a href="{{ route('shop.index') }}" class="koku-link mt-8">Return to watches <span>→</span></a></div>
+        @else
+            <header class="grid gap-10 border-b border-[var(--koku-ink)] pb-12 lg:grid-cols-[1fr_1.1fr] lg:items-end">
+                <div><div class="flex size-12 items-center justify-center border border-[var(--koku-indigo)] text-[var(--koku-indigo)]">✓</div><p class="koku-eyebrow mt-7 text-[var(--koku-indigo)]">Order received</p><h1 class="mt-4 font-serif text-5xl font-medium leading-none tracking-[-0.055em] sm:text-6xl">Thank you.</h1></div>
+                <div><p class="font-serif text-xl leading-8">Your timepiece is being prepared with care.</p><p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">Order <strong class="font-medium text-[var(--koku-ink)]">{{ $order->order_number }}</strong>. A confirmation has been sent to {{ $order->email }}.</p>@if ($order->status === 'pending')<p class="mt-3 text-xs text-[#8a651b]">Payment is being finalized. This page will update when processing completes.</p>@endif</div>
+            </header>
 
-    @if (!$order)
-        <div class="text-center py-16">
-            <p class="text-gray-400">We couldn't find that order.</p>
-            <a href="{{ route('shop.index') }}"
-                class="inline-block mt-4 text-sm underline underline-offset-4 text-gray-900">
-                Continue shopping
-            </a>
-        </div>
-    @else
-        <div class="text-center mb-10">
-            <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-green-50 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
+            <div class="grid gap-14 py-12 lg:grid-cols-[1.2fr_.8fr] lg:gap-20 lg:py-16">
+                <section>
+                    <div class="flex items-center justify-between border-b border-[var(--koku-line)] pb-4"><h2 class="font-serif text-2xl">Order details</h2><span class="koku-eyebrow text-[var(--koku-muted)]">{{ $order->items->sum('quantity') }} {{ Str::plural('piece', $order->items->sum('quantity')) }}</span></div>
+                    @foreach ($order->items as $item)
+                        <div class="flex items-start justify-between gap-6 border-b border-[var(--koku-line)] py-6 text-sm"><div><p class="font-serif text-lg">{{ $item->product_name }}</p><p class="mt-2 text-xs text-[var(--koku-muted)]">{{ $item->variant_name }} · Quantity {{ $item->quantity }}</p></div><p class="shrink-0">${{ number_format($item->subtotal, 2) }}</p></div>
+                    @endforeach
+                    <div class="ml-auto mt-7 max-w-sm space-y-3 text-xs"><div class="flex justify-between"><span class="text-[var(--koku-muted)]">Subtotal</span><span>${{ number_format($order->subtotal, 2) }}</span></div>@if ($order->discount > 0)<div class="flex justify-between text-[var(--koku-indigo)]"><span>Discount</span><span>−${{ number_format($order->discount, 2) }}</span></div>@endif<div class="flex justify-between"><span class="text-[var(--koku-muted)]">Delivery</span><span>${{ number_format($order->shipping_fee, 2) }}</span></div>@if ($order->insurance_fee > 0)<div class="flex justify-between"><span class="text-[var(--koku-muted)]">Insurance</span><span>${{ number_format($order->insurance_fee, 2) }}</span></div>@endif<div class="mt-4 flex items-end justify-between border-t border-[var(--koku-ink)] pt-4"><span class="font-serif text-lg">Total</span><strong class="font-serif text-2xl font-medium">${{ number_format($order->total, 2) }}</strong></div></div>
+                </section>
+
+                <aside class="space-y-10">
+                    <div class="border-t border-[var(--koku-ink)] pt-5"><p class="koku-eyebrow text-[var(--koku-indigo)]">Delivering to</p><address class="mt-5 text-sm not-italic leading-7 text-[var(--koku-muted)]"><strong class="font-medium text-[var(--koku-ink)]">{{ $order->shipping_full_name }}</strong><br>{{ $order->shipping_address_line1 }}@if($order->shipping_address_line2)<br>{{ $order->shipping_address_line2 }}@endif<br>{{ $order->shipping_city }}@if($order->shipping_district_area), {{ $order->shipping_district_area }}@endif<br>{{ $order->shipping_state_region }}, {{ $order->shipping_country }}</address></div>
+                    <div class="border-t border-[var(--koku-line)] pt-5"><p class="koku-eyebrow text-[var(--koku-muted)]">What happens next</p><ol class="mt-5 space-y-5 text-sm"><li class="grid grid-cols-[1.5rem_1fr] gap-3"><span class="font-serif text-[var(--koku-indigo)]">1</span><span>We verify and prepare your order.</span></li><li class="grid grid-cols-[1.5rem_1fr] gap-3"><span class="font-serif text-[var(--koku-indigo)]">2</span><span>You receive a dispatch confirmation.</span></li><li class="grid grid-cols-[1.5rem_1fr] gap-3"><span class="font-serif text-[var(--koku-indigo)]">3</span><span>Your watch arrives at the address above.</span></li></ol></div>
+                </aside>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900">Order Confirmed</h1>
-            <p class="text-gray-500 mt-1">
-                Order <span class="font-medium text-gray-900">{{ $order->order_number }}</span> — a confirmation has been
-                sent to {{ $order->email }}
-            </p>
-            @if ($order->status === 'pending')
-                <p class="text-xs text-amber-600 mt-2">Finalizing your order — this page will update shortly.</p>
-            @endif
-        </div>
-
-        <div class="border border-gray-200 rounded-xl divide-y divide-gray-100">
-            @foreach ($order->items as $item)
-                <div class="flex justify-between px-5 py-4 text-sm">
-                    <div>
-                        <p class="text-gray-900">{{ $item->product_name }}</p>
-                        <p class="text-gray-500 text-xs mt-0.5">{{ $item->variant_name }} &middot; Qty {{ $item->quantity }}</p>
-                    </div>
-                    <p class="text-gray-900">${{ number_format($item->subtotal, 2) }}</p>
-                </div>
-            @endforeach
-        </div>
-
-        <div class="mt-6 space-y-2 text-sm">
-            <div class="flex justify-between"><span class="text-gray-600">Subtotal</span><span
-                    class="text-gray-900">${{ number_format($order->subtotal, 2) }}</span></div>
-            @if ($order->discount > 0)
-                <div class="flex justify-between"><span class="text-gray-600">Discount</span><span
-                        class="text-green-700">−${{ number_format($order->discount, 2) }}</span></div>
-            @endif
-            <div class="flex justify-between"><span class="text-gray-600">Shipping</span><span
-                    class="text-gray-900">${{ number_format($order->shipping_fee, 2) }}</span></div>
-            @if ($order->insurance_fee > 0)
-                <div class="flex justify-between"><span class="text-gray-600">Insurance</span><span
-                        class="text-gray-900">${{ number_format($order->insurance_fee, 2) }}</span></div>
-            @endif
-            <div class="flex justify-between font-semibold text-base pt-2 border-t border-gray-200">
-                <span>Total</span><span>${{ number_format($order->total, 2) }}</span></div>
-        </div>
-
-        <div class="mt-8 border-t border-gray-200 pt-6 text-sm text-gray-500">
-            <p class="text-gray-900 font-medium mb-1">Shipping to</p>
-            <p>{{ $order->shipping_full_name }}</p>
-            <p>{{ $order->shipping_address_line1 }}{{ $order->shipping_address_line2 ? ', ' . $order->shipping_address_line2 : '' }}
-            </p>
-            <p>{{ $order->shipping_city }}{{ $order->shipping_district_area ? ', ' . $order->shipping_district_area : '' }},
-                {{ $order->shipping_state_region }}, {{ $order->shipping_country }}</p>
-        </div>
-
-        <div class="mt-10 text-center">
-            <a href="{{ route('shop.index') }}" class="text-sm underline underline-offset-4 text-gray-900">
-                Continue shopping
-            </a>
-        </div>
-    @endif
-
+            <div class="flex flex-col gap-5 border-t border-[var(--koku-line)] pt-8 sm:flex-row sm:items-center sm:justify-between"><p class="text-xs text-[var(--koku-muted)]">Questions about your order? Contact Koku support.</p><a href="{{ route('shop.index') }}" class="koku-link">Continue exploring <span>→</span></a></div>
+        @endif
+    </main>
 </div>

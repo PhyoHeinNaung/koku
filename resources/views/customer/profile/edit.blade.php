@@ -1,38 +1,3 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('customer.profile.partials.update-profile-information-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('customer.profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('customer.profile.partials.delete-user-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
-                <a href="{{ route('addresses.index') }}" class="text-sm text-gray-600 hover:text-gray-900 underline">
-                    Manage saved addresses →
-                </a>
-                <a href="{{ route('orders.index') }}" class="text-sm text-gray-600 hover:text-gray-900 underline ml-4">
-                    View order history →
-                </a>
-            </div>
-        </div>
-    </div>
+    <div class="bg-[var(--koku-paper)]"><main class="koku-shell py-14 sm:py-20"><div class="grid gap-12 lg:grid-cols-[16rem_1fr] lg:gap-20"><aside><p class="koku-eyebrow text-[var(--koku-indigo)]">Your account</p><h1 class="mt-4 font-serif text-4xl tracking-[-0.05em]">Profile</h1><nav class="mt-8 border-t border-[var(--koku-line)] text-sm"><a href="{{ route('profile.edit') }}" class="block border-b border-[var(--koku-line)] py-4 text-[var(--koku-indigo)]">Profile</a><a href="{{ route('orders.index') }}" class="block border-b border-[var(--koku-line)] py-4 text-[var(--koku-muted)]">Orders</a><a href="{{ route('addresses.index') }}" class="block border-b border-[var(--koku-line)] py-4 text-[var(--koku-muted)]">Addresses</a><a href="{{ route('wishlist.index') }}" class="block border-b border-[var(--koku-line)] py-4 text-[var(--koku-muted)]">Wishlist</a></nav></aside><section class="koku-account-panel space-y-10"><div class="border-t border-[var(--koku-ink)] bg-[var(--koku-white)] p-6 sm:p-8">@include('customer.profile.partials.update-profile-information-form')</div><div class="border-t border-[var(--koku-ink)] bg-[var(--koku-white)] p-6 sm:p-8">@include('customer.profile.partials.update-password-form')</div><div class="border-t border-[#a33b32] bg-[var(--koku-white)] p-6 sm:p-8">@include('customer.profile.partials.delete-user-form')</div></section></div></main></div>
 </x-app-layout>

@@ -11,10 +11,20 @@ use App\Livewire\Customer\Orders\Show as OrdersShow;
 use App\Livewire\Customer\Shop\Index as ShopIndex;
 use App\Livewire\Customer\Shop\Show as ShopShow;
 use App\Livewire\Customer\Wishlist\Index as WishlistIndex;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('customer.home');
+    $featuredProducts = Product::query()
+        ->with(['brand', 'category', 'variants.images'])
+        ->where('is_active', true)
+        ->whereHas('variants', fn ($query) => $query->where('is_active', true))
+        ->orderByDesc('is_featured')
+        ->latest()
+        ->take(4)
+        ->get();
+
+    return view('customer.home', compact('featuredProducts'));
 })->name('home');
 
 Route::get('/shop', ShopIndex::class)->name('shop.index');
