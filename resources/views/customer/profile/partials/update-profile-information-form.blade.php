@@ -1,64 +1,18 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
-
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
-
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
-        @csrf
-        @method('patch')
-
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+    <header class="flex flex-col justify-between gap-3 sm:flex-row"><div><p class="koku-eyebrow text-[var(--koku-indigo)]">Personal details</p><h2 class="mt-3">Profile information</h2></div><p class="max-w-xs text-xs leading-5">Keep your contact information current for order and delivery updates.</p></header>
+    <form id="send-verification" method="post" action="{{ route('verification.send') }}">@csrf</form>
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-8 grid gap-6 sm:grid-cols-2" x-data="{ preview: null, removeAvatar: false }">@csrf @method('patch')
+        <div class="sm:col-span-2 rounded-2xl border border-[var(--koku-line)]/70 bg-[#f8f7f4] p-4 sm:p-5">
+            <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+                <div class="relative shrink-0"><template x-if="preview"><img :src="preview" alt="New profile photo preview" class="size-20 rounded-2xl object-cover shadow-md"></template><div x-show="!preview">@if($user->avatar)<img x-show="!removeAvatar" src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}" class="size-20 rounded-2xl object-cover shadow-md"><span x-show="removeAvatar" class="flex size-20 items-center justify-center rounded-2xl bg-[var(--koku-indigo)] text-2xl font-semibold text-white">{{ Str::upper(Str::substr($user->name, 0, 1)) }}</span>@else<span class="flex size-20 items-center justify-center rounded-2xl bg-[var(--koku-indigo)] text-2xl font-semibold text-white shadow-md">{{ Str::upper(Str::substr($user->name, 0, 1)) }}</span>@endif</div><span class="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full border-2 border-[#f8f7f4] bg-white text-[var(--koku-indigo)] shadow"><svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l1.5-2h7L17 8h3v10H4V8Z"/><circle cx="12" cy="13" r="3"/></svg></span></div>
+                <div class="min-w-0 flex-1"><p class="text-sm font-medium text-[var(--koku-ink)]">Profile photo</p><p class="mt-1 text-xs leading-5">JPG, PNG or WebP. Maximum 3 MB. A square image works best.</p><div class="mt-3 flex flex-wrap items-center gap-2"><label class="cursor-pointer rounded-xl bg-white px-4 py-2.5 text-xs font-medium text-[var(--koku-indigo)] shadow-sm ring-1 ring-[var(--koku-line)]/70 transition hover:-translate-y-0.5 hover:shadow-md">Choose photo<input type="file" name="avatar" accept="image/jpeg,image/png,image/webp" class="sr-only" @change="const file=$event.target.files[0]; if(file){ preview=URL.createObjectURL(file); removeAvatar=false }"></label>@if($user->avatar)<button type="button" @click="removeAvatar=true; preview=null" class="rounded-xl px-3 py-2.5 text-xs text-[var(--koku-muted)] transition hover:bg-red-50 hover:text-red-700">Remove</button>@endif</div><input type="hidden" name="remove_avatar" :value="removeAvatar ? 1 : 0"><x-input-error class="koku-field-error" :messages="$errors->get('avatar')" /></div>
+            </div>
         </div>
-
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
+        <div><label class="koku-field-label" for="name">Full name</label><input id="name" name="name" type="text" class="koku-field" value="{{ old('name', $user->name) }}" required autocomplete="name"><x-input-error class="koku-field-error" :messages="$errors->get('name')" /></div>
+        <div><label class="koku-field-label" for="phone">Phone <span class="normal-case tracking-normal">(optional)</span></label><input id="phone" name="phone" type="tel" class="koku-field" value="{{ old('phone', $user->phone) }}" autocomplete="tel"><x-input-error class="koku-field-error" :messages="$errors->get('phone')" /></div>
+        <div class="sm:col-span-2"><label class="koku-field-label" for="email">Email address</label><input id="email" name="email" type="email" class="koku-field" value="{{ old('email', $user->email) }}" required autocomplete="username"><x-input-error class="koku-field-error" :messages="$errors->get('email')" />
+            @if (!$user->hasVerifiedEmail())<p class="mt-3 text-xs text-[var(--koku-clay)]">Your email is not verified. <button form="send-verification" class="underline underline-offset-4">Resend verification email</button></p>@endif
         </div>
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
-            @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
+        <div class="sm:col-span-2 flex items-center gap-4"><button type="submit" class="px-7 py-3.5 text-xs font-medium uppercase tracking-[.13em]">Save changes</button>@if (session('status') === 'profile-updated')<p x-data="{show:true}" x-show="show" x-init="setTimeout(()=>show=false,2500)" class="text-xs text-[var(--koku-indigo)]">Changes saved.</p>@endif</div>
     </form>
 </section>

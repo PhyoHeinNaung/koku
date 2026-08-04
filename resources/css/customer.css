@@ -187,4 +187,15 @@
     .koku-account-panel label { color: var(--koku-muted); font-size: .75rem; }
     .koku-account-panel input:not([type='checkbox']):not([type='radio']) { border-radius: 0; border-color: var(--koku-line); background: var(--koku-white); }
     .koku-account-panel button[type='submit'] { border-radius: 0; background: var(--koku-indigo); color: white; }
+
+    .koku-modern-account h2 { font-family: 'Noto Serif JP', ui-serif, serif; font-size: 1.5rem; letter-spacing: -.035em; color: var(--koku-ink); }
+    .koku-modern-account p { color: var(--koku-muted); }
+    .koku-modern-account .koku-field { border-radius: .875rem; border-color: color-mix(in srgb, var(--koku-line) 78%, white); background: #f8f7f4; padding: 1rem 1.1rem; transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
+    .koku-modern-account .koku-field:hover { background: white; }
+    .koku-modern-account .koku-field:focus { border-color: var(--koku-indigo); background: white; box-shadow: 0 0 0 4px color-mix(in srgb, var(--koku-indigo) 9%, transparent); }
+    .koku-modern-account button[type='submit'] { border-radius: .875rem; background: var(--koku-indigo); color: white; box-shadow: 0 10px 24px color-mix(in srgb, var(--koku-indigo) 20%, transparent); transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease; }
+    .koku-modern-account button[type='submit']:hover { transform: translateY(-1px); background: var(--koku-indigo-deep); box-shadow: 0 14px 30px color-mix(in srgb, var(--koku-indigo) 25%, transparent); }
+
+    #reviews article .grid.grid-cols-3 { display: flex; flex-wrap: wrap; }
+    #reviews article .grid.grid-cols-3 img { width: 5rem; height: 5rem; border-radius: .75rem; object-fit: cover; }
 }

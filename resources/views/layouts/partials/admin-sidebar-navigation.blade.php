@@ -50,7 +50,7 @@
             'id' => 'operations-navigation',
             'label' => 'Operations',
             'icon' => 'M4 6h16v12H4V6Zm4 0V4h8v2M8 11h8',
-            'active' => ['admin.customers.*', 'admin.shipping.*'],
+            'active' => ['admin.customers.*', 'admin.shipping.*', 'admin.reviews.*', 'admin.community.*'],
             'items' => [
                 [
                     'label' => 'Customers',
@@ -63,6 +63,18 @@
                     'route' => 'admin.shipping.index',
                     'active' => 'admin.shipping.*',
                     'icon' => 'M3 7h11v10H3V7Zm11 4h3l3 3v3h-6v-6ZM7 19.5h.01m10 0h.01',
+                ],
+                [
+                    'label' => 'Reviews',
+                    'route' => 'admin.reviews.index',
+                    'active' => 'admin.reviews.*',
+                    'icon' => 'M4 5h16v12H8l-4 4V5Zm4 4h8m-8 4h5',
+                ],
+                [
+                    'label' => 'Community',
+                    'route' => 'admin.community.index',
+                    'active' => 'admin.community.*',
+                    'icon' => 'M4 5h16v14H4V5Zm3 10 3-3 2 2 3-4 2 5',
                 ],
             ],
         ],

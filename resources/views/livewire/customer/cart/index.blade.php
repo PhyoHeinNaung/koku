@@ -6,6 +6,8 @@
         </div>
     </header>
 
+    <div class="border-b border-[var(--koku-line)] bg-[var(--koku-white)]"><div class="koku-shell grid grid-cols-3 divide-x divide-[var(--koku-line)] py-4 text-center"><div><p class="koku-eyebrow text-[var(--koku-muted)]">Delivery</p><p class="mt-1 hidden text-xs sm:block">Tracked & insured</p></div><div><p class="koku-eyebrow text-[var(--koku-muted)]">Returns</p><p class="mt-1 hidden text-xs sm:block">Considered returns</p></div><div><p class="koku-eyebrow text-[var(--koku-muted)]">Checkout</p><p class="mt-1 hidden text-xs sm:block">Secure payment</p></div></div></div>
+
     <main class="koku-shell py-12 sm:py-16 lg:py-24">
         @if ($items->isEmpty())
             <div class="flex min-h-[30rem] flex-col items-center justify-center border-y border-[var(--koku-line)] text-center">

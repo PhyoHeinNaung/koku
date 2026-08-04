@@ -45,14 +45,9 @@
                 <p class="mx-auto mt-4 max-w-lg text-xs leading-6 text-[var(--koku-muted)]">Watches selected for
                     clarity, proportion and enduring use.</p>
             </div>
-            <div class="relative mt-6 h-40 overflow-hidden bg-[#f4f5f7] sm:h-48 lg:h-52">
-                <div class="absolute -right-16 -top-36 h-[30rem] w-[54rem] rotate-[-7deg] rounded-[50%] bg-white shadow-[0_30px_70px_rgba(25,38,64,.12)]"></div>
-                <div class="absolute right-[12%] top-8 h-36 w-[38%] rotate-[5deg] rounded-[50%] border border-[#e7e9ee] bg-gradient-to-b from-white to-[#eceff4] shadow-[0_25px_45px_rgba(25,38,64,.08)]"></div>
-                <div class="absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center px-6 sm:px-10 lg:px-14">
-                    <p class="text-[9px] font-medium uppercase tracking-[0.2em] text-[var(--koku-indigo)]">The Koku edit</p>
-                    <h1 class="mt-3 font-serif text-2xl font-medium tracking-[-0.03em] text-[var(--koku-ink)] sm:text-4xl">Objects for measured time.</h1>
-                    <p class="mt-3 hidden max-w-sm text-xs leading-5 text-[var(--koku-muted)] sm:block">Quiet forms, precise movements and enduring materials.</p>
-                </div>
+            <div class="relative mt-6 overflow-hidden rounded-[2rem] bg-[var(--koku-indigo-deep)] px-7 py-10 text-white shadow-[0_24px_60px_rgba(24,34,57,.12)] sm:px-10 sm:py-12 lg:px-14">
+                <div class="absolute -right-20 -top-44 size-[28rem] rounded-full border border-white/10"></div><div class="absolute -right-5 -top-28 size-72 rounded-full border border-white/[.06]"></div>
+                <div class="relative flex flex-col justify-between gap-8 sm:flex-row sm:items-end"><div><p class="text-[9px] font-medium uppercase tracking-[0.2em] text-white/50">The Koku collection</p><h1 class="mt-4 max-w-xl font-serif text-3xl tracking-[-0.045em] sm:text-5xl">Time, considered.</h1><p class="mt-3 max-w-md text-xs leading-6 text-white/55">A restrained edit of watches chosen for proportion, character and enduring use.</p></div><a href="#collection" class="flex w-fit items-center gap-3 rounded-full border border-white/15 bg-white/[.07] px-4 py-2.5 text-[10px] uppercase tracking-[.13em] backdrop-blur">Explore {{ $products->total() }} pieces <span>↓</span></a></div>
             </div>
         </div>
     </header>
@@ -134,7 +129,7 @@
         </div>
     @endif
 
-    <main class="koku-shell py-12 sm:py-16 lg:py-20">
+    <main id="collection" class="koku-shell py-12 sm:py-16 lg:py-20">
         @if ($products->isEmpty())
             <div
                 class="flex min-h-[28rem] flex-col items-center justify-center border-y border-[var(--koku-line)] text-center">
@@ -150,37 +145,37 @@
                 @endif
             </div>
         @else
-            <div class="grid grid-cols-2 gap-x-4 gap-y-14 sm:gap-x-8 sm:gap-y-20 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-10">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 @foreach ($products as $product)
-                    <article wire:key="product-{{ $product->id }}" class="group min-w-0 text-center">
-                        <a href="{{ route('shop.product', $product->slug) }}" class="relative block h-60 sm:h-72 lg:h-80">
-                            @if ($product->primary_image_url)
-                                <img src="{{ $product->primary_image_url }}" alt="{{ $product->name }}" loading="lazy"
-                                    class="koku-product-image h-full w-full object-contain px-3 py-2 transition-transform duration-500 group-hover:scale-[1.025] sm:px-5">
+                    @php($catalogImages = ($product->defaultVariant()?->images ?? collect())->sortByDesc('is_primary')->pluck('image_url')->map(fn($path) => Storage::url($path))->values())
+                    <article wire:key="product-{{ $product->id }}" class="group min-w-0" x-data="{ images: @js($catalogImages), active: 0, previous(){ this.active=(this.active-1+this.images.length)%this.images.length }, next(){ this.active=(this.active+1)%this.images.length } }">
+                        <a href="{{ route('shop.product', $product->slug) }}" class="relative block aspect-[4/5] overflow-hidden rounded-2xl bg-[#f2f0eb]">
+                            @if ($catalogImages->isNotEmpty())
+                                <template x-for="(image,index) in images" :key="image"><img x-show="active===index" x-transition.opacity :src="image" alt="{{ $product->name }}" loading="lazy" class="absolute inset-0 h-full w-full object-contain p-6 sm:p-8"></template>
                             @else
                                 <div class="flex h-full items-center justify-center font-serif text-3xl text-[var(--koku-line)]">
                                     Koku</div>
                             @endif
                             @if ($product->is_featured)
-                                <span
-                                    class="absolute left-0 top-0 text-[8px] font-medium uppercase tracking-[0.15em] text-[var(--koku-indigo)]">Selected</span>
+                                <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1.5 text-[8px] font-medium uppercase tracking-[0.15em] text-[var(--koku-indigo)] shadow-sm backdrop-blur">Selected</span>
                             @endif
                             <button type="button" wire:click.stop.prevent="toggleWishlist({{ $product->id }})"
                                 aria-label="Toggle {{ $product->name }} in wishlist"
-                                class="absolute right-0 top-0 flex size-8 items-center justify-center text-[var(--koku-ink)] transition-colors hover:text-[var(--koku-indigo)]">
+                                class="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-white/90 text-[var(--koku-ink)] shadow-sm backdrop-blur transition hover:scale-105 hover:text-[var(--koku-indigo)]">
                                 <svg class="size-4" fill="{{ in_array($product->id, $this->wishlistedProductIds) ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733C11.285 4.876 9.623 3.75 7.687 3.75 5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
                             </button>
+                            @if($catalogImages->count() > 1)<div class="absolute inset-x-3 bottom-3 flex items-center justify-between opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100"><button type="button" @click.prevent.stop="previous()" class="flex size-9 items-center justify-center rounded-full bg-white/90 text-sm shadow-md backdrop-blur" aria-label="Previous image">←</button><span class="rounded-full bg-white/85 px-2.5 py-1 text-[9px] text-[var(--koku-muted)] shadow-sm"><span x-text="active+1"></span> / {{ $catalogImages->count() }}</span><button type="button" @click.prevent.stop="next()" class="flex size-9 items-center justify-center rounded-full bg-white/90 text-sm shadow-md backdrop-blur" aria-label="Next image">→</button></div>@endif
                         </a>
-                        <div class="mt-5 px-1">
-                            <div class="text-center">
+                        <div class="px-1 pb-4 pt-4">
+                            <div>
                                 <div class="min-w-0">
                                     <p
-                                        class="truncate text-[8px] font-medium uppercase tracking-[0.14em] text-[var(--koku-muted)]">
+                                        class="truncate text-[9px] font-medium uppercase tracking-[0.14em] text-[var(--koku-muted)]">
                                         {{ $product->brand?->name }}</p>
-                                    <h2 class="mt-2 truncate text-xs font-medium sm:text-sm">{{ $product->name }}</h2>
+                                    <h2 class="mt-2 truncate font-serif text-lg tracking-[-.025em]">{{ $product->name }}</h2>
                                 </div>
                                 @if ($product->variants_min_price)<span
-                                class="mt-2 block text-[11px] text-[var(--koku-muted)]">${{ number_format($product->variants_min_price, 2) }}</span>@endif
+                                class="mt-3 block text-xs font-medium">From ${{ number_format($product->variants_min_price, 2) }}</span>@endif
                             </div>
                         </div>
                     </article>

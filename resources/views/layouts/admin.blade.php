@@ -17,6 +17,8 @@
         request()->routeIs('admin.customers.*') => 'Customers',
         request()->routeIs('admin.shipping.*') => 'Shipping',
         request()->routeIs('admin.reports.*') => 'Reports & insights',
+        request()->routeIs('admin.reviews.*') => 'Review moderation',
+        request()->routeIs('admin.community.*') => 'Community moderation',
         request()->routeIs('admin.settings.*') => 'Store settings',
         request()->routeIs('admin.profile') => 'Admin profile',
         default => 'Administration',
@@ -25,7 +27,7 @@
     $pageSection = match (true) {
         request()->routeIs('admin.products.*', 'admin.categories.*', 'admin.brands.*') => 'Catalog',
         request()->routeIs('admin.orders.*', 'admin.coupons.*') => 'Sales',
-        request()->routeIs('admin.customers.*', 'admin.shipping.*') => 'Operations',
+        request()->routeIs('admin.customers.*', 'admin.shipping.*', 'admin.reviews.*', 'admin.community.*') => 'Operations',
         request()->routeIs('admin.reports.*') => 'Insights',
         request()->routeIs('admin.settings.*') => 'System',
         request()->routeIs('admin.profile') => 'Account',
