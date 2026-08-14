@@ -147,6 +147,13 @@
         transition: transform 700ms cubic-bezier(.2,.75,.25,1);
     }
 
+    .home-kicker {
+        font-size: .625rem;
+        font-weight: 600;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+
     .group:hover .koku-product-image {
         transform: scale(1.025);
     }
@@ -180,6 +187,47 @@
         margin-top: 0.4rem;
         font-size: 0.75rem;
         color: #a33b32;
+    }
+
+    .koku-auth-field {
+        width: 100%;
+        border: 1px solid color-mix(in srgb, var(--koku-line) 85%, white);
+        background: white;
+        padding: 1rem 1.05rem;
+        font-size: 0.875rem;
+        color: var(--koku-ink);
+        box-shadow: 0 1px 0 rgba(25, 38, 64, .02);
+        transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .koku-auth-field::placeholder { color: #aaa49b; }
+    .koku-auth-field:hover { border-color: #bdb4a8; }
+    .koku-auth-field:focus {
+        border-color: var(--koku-indigo);
+        outline: none;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--koku-indigo) 10%, transparent);
+    }
+
+    .koku-auth-button {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--koku-indigo-deep);
+        padding: 1rem 1.25rem;
+        color: white;
+        font-size: .6875rem;
+        font-weight: 500;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        box-shadow: 0 12px 28px rgba(25, 38, 64, .14);
+        transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .koku-auth-button:hover {
+        background: var(--koku-indigo);
+        transform: translateY(-1px);
+        box-shadow: 0 16px 34px rgba(25, 38, 64, .2);
     }
 
     .koku-account-panel h2 { font-family: 'Noto Serif JP', ui-serif, serif; font-size: 1.25rem; color: var(--koku-ink); }

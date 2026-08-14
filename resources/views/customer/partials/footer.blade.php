@@ -18,23 +18,22 @@
                 <div>
                     <p class="koku-eyebrow mb-5 text-white/55">Koku</p>
                     <ul class="space-y-3">
-                        <li><a href="#">Our story</a></li>
-                        <li><a href="#">Watch care</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="{{ route('about') }}">Our story</a></li>
+                        <li><a href="{{ route('community.index') }}">Wrist Stories</a></li>
+                        <li><a href="{{ route('contact') }}">Contact</a></li>
                     </ul>
                 </div>
                 <div>
                     <p class="koku-eyebrow mb-5 text-white/55">Service</p>
                     <ul class="space-y-3">
-                        <li><a href="#">Shipping & returns</a></li>
-                        <li><a href="#">FAQ</a></li>
+                        <li><a href="{{ route('faqs') }}#shipping">Shipping & returns</a></li>
+                        <li><a href="{{ route('faqs') }}">FAQs</a></li>
                         <li><a href="{{ auth()->check() ? route('profile.edit') : route('login') }}">My account</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div
-            class="flex flex-col gap-5 pt-8 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col gap-5 pt-8 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
             <p>© {{ date('Y') }} Koku. Time, considered.</p>
             <div class="flex gap-6"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Instagram</a></div>
         </div>

@@ -30,6 +30,10 @@ Route::get('/', function () {
     return view('customer.home', compact('featuredProducts'));
 })->name('home');
 
+Route::view('/about', 'customer.about')->name('about');
+Route::view('/contact', 'customer.contact')->name('contact');
+Route::view('/faqs', 'customer.faqs')->name('faqs');
+
 Route::get('/shop', ShopIndex::class)->name('shop.index');
 Route::get('/products/{product:slug}', ShopShow::class)->name('shop.product');
 Route::get('/wishlist', WishlistIndex::class)->name('wishlist.index');
