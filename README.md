@@ -219,7 +219,6 @@ Stripe should be used in **Test Mode** while evaluating the system.
 - Order history and tracking
 - Product reviews
 - Community Wrist Gallery
-- AI Shopping Assistant
 - Profile and address management
 
 ### Administration Features
