@@ -1,27 +1,5 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
-
-    <form method="POST" action="{{ route('password.confirm') }}">
-        @csrf
-
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
-        </div>
-    </form>
+    <div class="flex size-12 items-center justify-center border border-[var(--koku-line)] bg-white text-[var(--koku-indigo)]"><svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3 5 6v5c0 4.5 2.8 7.8 7 10 4.2-2.2 7-5.5 7-10V6l-7-3Z"/><path d="m9.5 12 1.7 1.7 3.6-3.7"/></svg></div>
+    <p class="mt-7 koku-eyebrow text-[var(--koku-indigo)]">Protected area</p><h1 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Confirm it is you.</h1><p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">For your security, enter your password once more before continuing.</p>
+    <form method="POST" action="{{ route('password.confirm') }}" class="mt-9 space-y-6" x-data="{ show: false }">@csrf<div><label class="koku-field-label" for="password">Password</label><div class="relative"><input id="password" class="koku-auth-field pr-16" :type="show ? 'text' : 'password'" name="password" required autocomplete="current-password" autofocus><button type="button" @click="show=!show" class="absolute inset-y-0 right-0 px-4 text-[10px] uppercase tracking-[.1em] text-[var(--koku-muted)]" x-text="show ? 'Hide' : 'Show'"></button></div>@error('password')<p class="koku-field-error">{{ $message }}</p>@enderror</div><button class="koku-auth-button">Confirm and continue <span>→</span></button></form>
 </x-guest-layout>

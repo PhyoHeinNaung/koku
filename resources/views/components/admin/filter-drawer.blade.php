@@ -30,7 +30,7 @@
         role="dialog"
         aria-modal="true"
         aria-label="{{ $title }}"
-        class="absolute inset-y-0 right-0 flex w-full max-w-[430px] flex-col overflow-hidden border-l border-[var(--admin-border)] bg-[var(--admin-surface)] text-base-content shadow-2xl shadow-black/45 sm:bottom-4 sm:right-4 sm:top-4 sm:h-auto sm:rounded-2xl sm:border">
+        class="admin-drawer absolute inset-y-0 right-0 flex w-full max-w-[430px] flex-col overflow-hidden border-l border-[var(--admin-border)] bg-[var(--admin-surface)] text-base-content shadow-2xl shadow-black/45">
         <header class="relative border-b border-[var(--admin-border)] bg-[var(--admin-surface-raised)] px-5 py-4">
             <span class="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" aria-hidden="true"></span>
             <div class="flex items-start justify-between gap-4">

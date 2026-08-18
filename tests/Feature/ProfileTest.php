@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
@@ -48,6 +50,40 @@ test('email verification status is unchanged when the email address is unchanged
         ->assertRedirect('/profile');
 
     $this->assertNotNull($user->refresh()->email_verified_at);
+});
+
+test('profile photo can be uploaded replaced and removed', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+    $pixel = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=');
+
+    $this->actingAs($user)->patch('/profile', [
+        'name' => $user->name,
+        'email' => $user->email,
+        'avatar' => UploadedFile::fake()->createWithContent('portrait.png', $pixel),
+    ])->assertSessionHasNoErrors()->assertRedirect('/profile');
+
+    $firstAvatar = $user->refresh()->avatar;
+    Storage::disk('public')->assertExists($firstAvatar);
+
+    $this->actingAs($user)->patch('/profile', [
+        'name' => $user->name,
+        'email' => $user->email,
+        'avatar' => UploadedFile::fake()->createWithContent('replacement.png', $pixel),
+    ])->assertSessionHasNoErrors();
+
+    $replacementAvatar = $user->refresh()->avatar;
+    Storage::disk('public')->assertMissing($firstAvatar);
+    Storage::disk('public')->assertExists($replacementAvatar);
+
+    $this->actingAs($user)->patch('/profile', [
+        'name' => $user->name,
+        'email' => $user->email,
+        'remove_avatar' => true,
+    ])->assertSessionHasNoErrors();
+
+    expect($user->refresh()->avatar)->toBeNull();
+    Storage::disk('public')->assertMissing($replacementAvatar);
 });
 
 test('user can delete their account', function () {

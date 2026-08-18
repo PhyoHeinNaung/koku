@@ -1,16 +1,7 @@
 @props(['label', 'value', 'tint' => 'gray'])
 
-@php
-    $tints = [
-        'gray' => 'bg-gray-50',
-        'amber' => 'bg-amber-50',
-        'green' => 'bg-green-50',
-        'blue' => 'bg-blue-50',
-    ];
-@endphp
-
-<div class="{{ $tints[$tint] ?? $tints['gray'] }} rounded-xl p-5">
-    <p class="text-sm text-gray-600">{{ $label }}</p>
-    <p class="text-3xl font-bold text-gray-900 mt-2">{{ $value }}</p>
+<div class="border border-[var(--admin-border)] bg-white p-5">
+    <p class="text-xs font-medium text-[var(--koku-admin-muted)]">{{ $label }}</p>
+    <p class="mt-3 text-[1.75rem] font-semibold tracking-[-.035em] text-[var(--koku-admin-ink)] tabular-nums">{{ $value }}</p>
     {{ $slot }}
 </div>

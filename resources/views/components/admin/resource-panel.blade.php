@@ -1,17 +1,17 @@
 @props(['loadingTarget' => null])
 
 <section
-    {{ $attributes->class('overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-admin-panel') }}
+    {{ $attributes->class('admin-resource-panel overflow-hidden bg-white') }}
     @if ($loadingTarget) wire:loading.class.delay="opacity-60" wire:target="{{ $loadingTarget }}" @endif>
     @isset($navigation)
-        <div class="overflow-x-auto border-b border-[var(--admin-border)] bg-[var(--admin-surface-raised)] px-3 py-2">
+        <div class="overflow-x-auto border-b border-[var(--admin-border)] bg-white px-0 py-2">
             <nav class="flex min-w-max items-center gap-1" role="tablist" aria-label="Resource views">
                 {{ $navigation }}
             </nav>
         </div>
     @endisset
 
-    <div class="flex flex-col gap-3 border-b border-[var(--admin-border)] bg-[var(--admin-surface)] px-3 py-3 sm:px-4 lg:flex-row lg:items-center">
+    <div class="flex flex-col gap-3 border-b border-[var(--admin-border)] bg-white px-0 py-3 lg:flex-row lg:items-center">
         {{ $toolbar }}
     </div>
 

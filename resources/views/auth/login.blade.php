@@ -1,47 +1,20 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div>
+        <p class="koku-eyebrow text-[var(--koku-indigo)]">Welcome back</p>
+        <h1 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Sign in to Koku.</h1>
+        <p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">Access your saved watches, order history and delivery details.</p>
+    </div>
 
-    <form method="POST" action="{{ route('login') }}">
+    <x-auth-session-status class="mt-7 border-l-2 border-emerald-600 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" :status="session('status')" />
+
+    <form method="POST" action="{{ route('login') }}" class="mt-9 space-y-6">
         @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded-sm dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-xs focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
+        <div><label class="koku-field-label" for="email">Email address</label><input id="email" class="koku-auth-field" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="you@example.com">@error('email')<p class="koku-field-error">{{ $message }}</p>@enderror</div>
+        <div x-data="{ show: false }"><div class="flex items-center justify-between"><label class="koku-field-label" for="password">Password</label><a href="{{ route('password.request') }}" class="mb-2 text-[11px] text-[var(--koku-indigo)] hover:underline">Forgot password?</a></div><div class="relative"><input id="password" class="koku-auth-field pr-16" :type="show ? 'text' : 'password'" name="password" required autocomplete="current-password" placeholder="Enter your password"><button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-4 text-[10px] font-medium uppercase tracking-[.1em] text-[var(--koku-muted)]" x-text="show ? 'Hide' : 'Show'"></button></div>@error('password')<p class="koku-field-error">{{ $message }}</p>@enderror</div>
+        <label class="flex cursor-pointer items-center gap-3 text-xs text-[var(--koku-muted)]"><input type="checkbox" name="remember" class="size-4 rounded-none border-[var(--koku-line)] text-[var(--koku-indigo)] focus:ring-[var(--koku-indigo)]">Keep me signed in on this device</label>
+        <button class="koku-auth-button">Sign in <span aria-hidden="true">→</span></button>
     </form>
+
+    <div class="mt-8 flex items-center gap-4"><span class="h-px flex-1 bg-[var(--koku-line)]"></span><span class="text-[10px] uppercase tracking-[.13em] text-[var(--koku-muted)]">New to Koku?</span><span class="h-px flex-1 bg-[var(--koku-line)]"></span></div>
+    <a href="{{ route('register') }}" class="mt-6 flex w-full items-center justify-center border border-[var(--koku-ink)] px-5 py-4 text-[11px] font-medium uppercase tracking-[.13em] transition hover:bg-[var(--koku-ink)] hover:text-white">Create an account</a>
 </x-guest-layout>

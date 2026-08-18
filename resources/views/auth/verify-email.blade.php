@@ -1,31 +1,6 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
-
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
-
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
-            </div>
-        </form>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                {{ __('Log Out') }}
-            </button>
-        </form>
-    </div>
+    <div class="flex size-14 items-center justify-center border border-[var(--koku-line)] bg-white text-[var(--koku-indigo)]"><svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14"/><path d="m4 7 8 6 8-6"/></svg></div>
+    <p class="mt-7 koku-eyebrow text-[var(--koku-indigo)]">Check your inbox</p><h1 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Verify your email.</h1><p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">We sent a verification link to your email address. Open it to complete your Koku account and receive important order updates.</p>
+    @if(session('status')==='verification-link-sent')<div class="mt-7 border-l-2 border-emerald-600 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-800">A fresh verification link has been sent to your email address.</div>@endif
+    <div class="mt-9 space-y-4"><form method="POST" action="{{ route('verification.send') }}">@csrf<button class="koku-auth-button">Resend verification email <span>→</span></button></form><form method="POST" action="{{ route('logout') }}">@csrf<button class="w-full py-3 text-xs text-[var(--koku-muted)] underline underline-offset-4 hover:text-[var(--koku-indigo)]">Sign out and use another account</button></form></div>
 </x-guest-layout>

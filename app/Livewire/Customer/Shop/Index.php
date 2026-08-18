@@ -38,6 +38,9 @@ class Index extends Component
     #[Url]
     public string $sort = 'date_desc';
 
+    #[Url]
+    public string $search = '';
+
     public bool $showFilters = false;
 
     public float $priceFloor = 0;
@@ -65,7 +68,7 @@ class Index extends Component
 
     public function updated($property): void
     {
-        if (in_array($property, ['sort', 'minPrice', 'maxPrice', 'brands', 'categories', 'genders', 'movements'])) {
+        if (in_array($property, ['sort', 'search', 'minPrice', 'maxPrice', 'brands', 'categories', 'genders', 'movements'])) {
             $this->resetPage();
         }
     }
@@ -95,7 +98,16 @@ class Index extends Component
             ->with(['brand', 'category', 'specification', 'variants.images'])
             ->withMin('variants', 'price')
             ->where('is_active', true)
-            ->whereHas('variants', fn ($q) => $q->where('is_active', true));
+            ->whereHas('variants', fn ($q) => $q->where('is_active', true))
+            ->when($this->search !== '', function ($query) {
+                $term = '%'.trim($this->search).'%';
+
+                $query->where(function ($query) use ($term) {
+                    $query->where('name', 'like', $term)
+                        ->orWhere('description', 'like', $term)
+                        ->orWhereHas('brand', fn ($brand) => $brand->where('name', 'like', $term));
+                });
+            });
     }
 
     protected function applyFilters($query, array $except = [])

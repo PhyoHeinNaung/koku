@@ -3,262 +3,269 @@
 @php
     $megaMenus = [
         'shop' => [
-            'label' => 'Shop',
+            'label' => 'Watches',
             'columns' => [
-                ['title' => 'Collections', 'links' => ["Men's Watches", "Women's Watches", 'Unisex', 'New Arrivals', 'Best Sellers']],
-                ['title' => 'By Style', 'links' => ['Casual & Everyday', 'Dress & Formal', 'Sport & Dive', 'Minimalist']],
-                ['title' => 'By Movement', 'links' => ['Automatic', 'Quartz (Battery)', 'Mechanical (Hand-wind)', 'Chronographs']],
-            ],
-            'images' => [
-                ['src' => 'https://i.pinimg.com/1200x/75/88/42/7588424550866cfc0cc5067d1d2655cf.jpg', 'caption' => 'New Arrivals'],
-                ['src' => 'https://i.pinimg.com/736x/67/32/94/673294bf94aeef2b2a9aa901e3fc85cd.jpg', 'caption' => 'Best Sellers'],
+                ['title' => 'Collection', 'links' => [["Men's watches", route('shop.index', ['genders' => ['men']])], ["Women's watches", route('shop.index', ['genders' => ['women']])], ['Unisex', route('shop.index', ['genders' => ['unisex']])], ['View all', route('shop.index')]]],
+                ['title' => 'Style', 'links' => [['Casual & everyday', route('shop.index')], ['Dress & formal', route('shop.index')], ['Sport & dive', route('shop.index')], ['Minimal', route('shop.index')]]],
+                ['title' => 'Movement', 'links' => [['Automatic', route('shop.index', ['movements' => ['automatic']])], ['Quartz', route('shop.index', ['movements' => ['quartz']])], ['Mechanical', route('shop.index', ['movements' => ['mechanical']])], ['Chronograph', route('shop.index', ['movements' => ['chronograph']])]]],
             ],
         ],
         'brands' => [
             'label' => 'Brands',
-            'columns' => [
-                ['title' => 'Luxury Tier', 'links' => ['Rolex', 'Omega', 'Cartier', 'Tudor']],
-                ['title' => 'Premium Tier', 'links' => ['Longines', 'Tissot', 'Hamilton', 'Seiko Prospex']],
-                ['title' => 'Everyday Tier', 'links' => ['Citizen', 'Casio / G-Shock', 'Orient', 'Timex']],
-                ['title' => 'Smart / Sport', 'links' => ['Garmin', 'Apple', 'Suunto', 'Fitbit']],
-            ],
-            'images' => [
-                ['src' => 'https://images.pexels.com/photos/31642726/pexels-photo-31642726.jpeg', 'caption' => 'View All Brands'],
-            ],
+            'columns' => $featuredBrands->chunk(4)->map(fn ($brands, $index) => [
+                'title' => $index === 0 ? 'Featured brands' : 'More featured',
+                'links' => $brands->map(fn ($brand) => [$brand->name, route('shop.index', ['brands' => [$brand->slug]])])->all(),
+            ])->push([
+                'title' => 'All makers',
+                'links' => [['View all brands', route('shop.index')]],
+            ])->all(),
         ],
-        'about' => [
+        'journal' => [
             'label' => 'About',
             'columns' => [
-                ['title' => 'Company & Help', 'links' => ['About Us', 'Contact Us', 'FAQs']],
-                ['title' => 'Trust & Education', 'links' => ['Shipping & Returns', 'Watch Care Guide']],
-            ],
-            'images' => [
-                ['src' => 'https://i.pinimg.com/736x/93/4e/4f/934e4fda42aeabcd2d797048a49af4ae.jpg', 'caption' => 'Our Story'],
-                ['src' => 'https://i.pinimg.com/1200x/f8/69/f4/f869f467a0b5a789e7160c6027e9d4d6.jpg', 'caption' => 'Watch Care Guide'],
+                ['title' => 'Koku', 'links' => [['Our story', route('about')], ['Visit & contact', route('contact')]]],
+                ['title' => 'Guidance', 'links' => [['Shipping & returns', route('shipping-returns')], ['Watch care & warranty', route('watch-care')], ['Frequently asked questions', route('faqs')]]],
+                ['title' => 'Community', 'links' => [['Wrist Stories', route('community.index')], ['Share your story', route('community.create')]]],
             ],
         ],
     ];
 @endphp
 
-<nav x-data="{
-        overlay: @js($overlay),
-        scrolled: {{ $overlay ? 'false' : 'true' }},
-        hovered: false,
-        activeMenu: null,
-        profileOpen: false,
-        mobileOpen: false,
-    }" x-init="scrolled = overlay ? (window.scrollY > 40) : true"
-    @scroll.window="if (overlay) scrolled = window.scrollY > 40" @mouseenter="hovered = true"
+<nav x-data="{ hovered: false, activeMenu: null, profileOpen: false, mobileOpen: false, searchOpen: false }"
     @mouseleave="hovered = false; activeMenu = null"
-    :class="(scrolled || hovered) ? 'bg-white text-gray-900 shadow-sm' : 'bg-transparent text-white'"
-    class="{{ $overlay ? 'fixed' : 'sticky' }} top-0 inset-x-0 z-50 transition-colors duration-300">
+    class="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-[var(--koku-indigo-deep)] text-[#faf8f3]">
 
-    <div class="px-6 sm:px-10 lg:px-16">
-        <div class="relative flex items-center justify-center h-20">
+    <div class="koku-shell">
+        <div class="relative flex h-[4.5rem] items-center lg:h-[4.75rem]">
+            <a href="{{ route('home') }}"
+                class="font-serif text-[1.55rem] font-semibold tracking-[-0.06em] sm:text-[1.7rem]"
+                aria-label="Koku home">Koku</a>
 
-            {{-- Left: desktop nav triggers --}}
-            <div class="absolute left-0 hidden lg:flex items-center gap-8 h-full">
+            <div class="absolute left-1/2 hidden h-full -translate-x-1/2 items-center gap-8 lg:flex">
                 @foreach ($megaMenus as $key => $menu)
-                    <x-mega-menu-trigger :menu-key="$key" :label="$menu['label']" />
+                    <button type="button" @mouseenter="hovered = true; activeMenu = '{{ $key }}'"
+                        @focus="hovered = true; activeMenu = '{{ $key }}'"
+                        class="koku-eyebrow relative flex h-full items-center after:absolute after:inset-x-0 after:bottom-5 after:h-px after:origin-left after:bg-current after:transition-transform"
+                        :class="activeMenu === '{{ $key }}' ? 'after:scale-x-100' : 'after:scale-x-0'">
+                        {{ $menu['label'] }}
+                    </button>
                 @endforeach
+                <a href="{{ route('community.index') }}" class="koku-eyebrow">Community</a>
             </div>
 
-            {{-- Left: mobile hamburger --}}
-            <button type="button" @click="mobileOpen = true" class="absolute left-0 lg:hidden p-2"
-                :class="(scrolled || hovered) ? 'text-gray-900' : 'text-white'" aria-label="Menu">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+            <button type="button" @click="mobileOpen = true"
+                class="koku-icon-button order-3 hover:!bg-white/10 hover:!text-white lg:hidden" aria-label="Open menu">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" d="M3 7h18M3 17h18" />
                 </svg>
             </button>
 
-            {{-- Center: logo --}}
-            <a href="{{ url('/') }}"
-                class="flex items-center transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FDBF2D]"
-                :class="(scrolled || hovered) ? 'text-black' : 'text-white'" aria-label="TICKS home">
-                <x-brand-logo class="h-6 w-[7.5rem] sm:h-7 sm:w-[8.75rem]" />
-            </a>
-
-            {{-- Right: desktop icons --}}
-            <div class="absolute right-0 hidden lg:flex items-center gap-3">
-
-                <x-nav-icon-button label="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
-                    </svg>
-                </x-nav-icon-button>
-
-                <livewire:customer.wishlist.icon />
-
-                <livewire:customer.cart.drawer />
-
-                <div class="relative" @click.outside="profileOpen = false">
-                    <button type="button" @click="profileOpen = !profileOpen"
-                        class="p-2 transition-colors duration-200 hover:opacity-60"
-                        :class="(scrolled || hovered) ? 'text-gray-900' : 'text-white'" aria-label="Account">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                    </button>
-                    <ul x-show="profileOpen" x-transition x-cloak
-                        class="absolute right-0 mt-3 menu p-2 shadow bg-white text-base-content rounded-box w-52 z-50">
-                        @auth
-                            <li><a href="{{ route('profile.edit') }}">Profile</a></li>
-                            <li>
-                                <button type=" button" onclick="document.getElementById('logout-form').submit()">
-                                    Log Out
-                                </button>
-                            </li>
-                        @else
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('register') }}">Register</a></li>
-                        @endauth
-                    </ul>
-                </div>
-
-            </div>
-
-            {{-- Right: mobile icons (search + cart only) --}}
-            <div class="absolute right-0 flex lg:hidden items-center gap-1">
-                <button type="button" class="p-2" :class="(scrolled || hovered) ? 'text-gray-900' : 'text-white'"
-                    aria-label="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+            <div class="ml-auto flex items-center gap-0.5">
+                <button type="button" @click="searchOpen = true"
+                    class="koku-icon-button hover:!bg-white/10 hover:!text-white" aria-label="Search">
+                    <svg class="size-[1.15rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <circle cx="11" cy="11" r="6.5" />
+                        <path stroke-linecap="round" d="m16 16 4.25 4.25" />
                     </svg>
                 </button>
-                <a href="#" class="p-2" :class="(scrolled || hovered) ? 'text-gray-900' : 'text-white'"
-                    aria-label="Cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m-.75 9h9a2.25 2.25 0 002.25-2.25l-.75-9a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25l-.75 9a2.25 2.25 0 002.25 2.25z" />
-                    </svg>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-    {{-- logout form, shared by desktop dropdown + mobile drawer --}}
-    <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">
-        @csrf
-    </form>
-
-    {{-- Shared full-width desktop mega menu panel --}}
-    <div x-show="activeMenu !== null" x-transition.opacity x-cloak
-        class="absolute inset-x-0 top-full w-full bg-white text-gray-900 shadow-xl">
-        <div class="px-6 sm:px-10 lg:px-16 pt-8 pb-12">
-            @foreach ($megaMenus as $key => $menu)
-                <x-mega-menu-panel :menu-key="$key" class="flex items-start gap-16 min-h-[300px]">
-                    @foreach ($menu['columns'] as $column)
-                        <x-mega-menu-column :title="$column['title']">
-                            @foreach ($column['links'] as $link)
-                                <li><a href="#" class="text-base hover:underline underline-offset-4">{{ $link }}</a></li>
-                            @endforeach
-                        </x-mega-menu-column>
-                    @endforeach
-                    @if (!empty($menu['images']))
-                        <div class="flex gap-6 ml-auto">
-                            @foreach ($menu['images'] as $img)
-                                <x-mega-menu-promo :image="$img['src']" :caption="$img['caption']" />
-                            @endforeach
-                        </div>
-                    @endif
-                </x-mega-menu-panel>
-            @endforeach
-        </div>
-    </div>
-
-    {{-- Mobile drawer backdrop --}}
-    <div x-show="mobileOpen" x-transition.opacity x-cloak @click="mobileOpen = false"
-        class="fixed inset-0 bg-black/40 z-40 lg:hidden"></div>
-
-    {{-- Mobile drawer panel --}}
-    <div x-show="mobileOpen" x-cloak x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
-        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
-        x-transition:leave-end="-translate-x-full"
-        class="fixed inset-y-0 left-0 w-full max-w-sm bg-white text-gray-900 z-50 lg:hidden overflow-y-auto">
-
-        <div class="flex items-center justify-end px-6 h-20 border-b border-base-200">
-            <button type="button" @click="mobileOpen = false" class="p-2" aria-label="Close menu">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="px-6 py-4">
-            @foreach ($megaMenus as $key => $menu)
-                <div class="border-b border-base-200" x-data="{ menuOpen: false }">
-                    <button type="button" @click="menuOpen = !menuOpen"
-                        class="w-full flex items-center justify-between py-4 text-base font-medium">
-                        {{ $menu['label'] }}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-200"
-                            :class="menuOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                <div class="hidden sm:block">
+                    <livewire:customer.wishlist.icon />
+                </div>
+                <livewire:customer.cart.drawer />
+                <div class="relative hidden sm:block" @click.outside="profileOpen = false">
+                    <button type="button" @click="profileOpen = !profileOpen"
+                        class="koku-icon-button text-[#faf8f3] hover:!bg-white/10 hover:!text-white"
+                        aria-label="Account">
+                        <svg class="size-[1.15rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <circle cx="12" cy="7.5" r="3.5" />
+                            <path stroke-linecap="round" d="M5.5 20a6.5 6.5 0 0 1 13 0" />
                         </svg>
                     </button>
+                    <div x-show="profileOpen" x-transition:enter="transition duration-200 ease-out"
+                        x-transition:enter-start="translate-y-2 scale-[.97] opacity-0"
+                        x-transition:enter-end="translate-y-0 scale-100 opacity-100"
+                        x-transition:leave="transition duration-150 ease-in"
+                        x-transition:leave-start="translate-y-0 scale-100 opacity-100"
+                        x-transition:leave-end="translate-y-2 scale-[.97] opacity-0" x-cloak
+                        class="absolute right-0 top-full mt-3 w-[22rem] origin-top-right overflow-hidden rounded-3xl border border-white/80 bg-white/95 text-sm text-[var(--koku-ink)] shadow-[0_28px_80px_rgba(15,24,44,.24)] backdrop-blur-2xl">
+                        @auth
+                            <div class="relative overflow-hidden bg-[var(--koku-indigo-deep)] p-5 text-white">
+                                <div class="absolute -right-8 -top-10 size-28 rounded-full bg-white/10 blur-2xl"></div>
+                                <div class="relative flex items-center gap-3.5">@if(auth()->user()->avatar)<img
+                                    src="{{ Storage::url(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}"
+                                class="size-12 rounded-2xl object-cover shadow-lg ring-1 ring-white/20">@else<span
+                                        class="flex size-12 items-center justify-center rounded-2xl bg-white text-base font-semibold text-[var(--koku-indigo)] shadow-lg">{{ Str::upper(Str::substr(auth()->user()->name, 0, 1)) }}</span>@endif
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <p class="truncate font-medium">{{ auth()->user()->name }}</p><i
+                                                class="size-1.5 rounded-full bg-emerald-400"></i>
+                                        </div>
+                                        <p class="mt-1 truncate text-[11px] text-white/50">{{ auth()->user()->email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 p-3"><a href="{{ route('orders.index') }}"
+                                    class="group rounded-2xl bg-[#f4f2ee] p-4 transition hover:-translate-y-0.5 hover:bg-[#ebe7e0]"><svg
+                                        class="size-5 text-[var(--koku-indigo)]" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path d="M5 8h14l-1 12H6L5 8Z" />
+                                        <path d="M9 8V6a3 3 0 016 0v2" />
+                                    </svg><span class="mt-3 block text-xs font-medium">My orders</span><span
+                                        class="mt-1 block text-[10px] text-[var(--koku-muted)]">Track purchases</span></a><a
+                                    href="{{ route('addresses.index') }}"
+                                    class="group rounded-2xl bg-[#f4f2ee] p-4 transition hover:-translate-y-0.5 hover:bg-[#ebe7e0]"><svg
+                                        class="size-5 text-[var(--koku-indigo)]" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0Z" />
+                                        <circle cx="12" cy="10" r="2.5" />
+                                    </svg><span class="mt-3 block text-xs font-medium">Addresses</span><span
+                                        class="mt-1 block text-[10px] text-[var(--koku-muted)]">Manage delivery</span></a>
+                            </div>
+                            <div class="border-t border-[var(--koku-line)]/60 p-3"><a href="{{ route('profile.edit') }}"
+                                    class="flex items-center justify-between rounded-xl px-3 py-3 transition hover:bg-[#f4f2ee]"><span
+                                        class="text-xs font-medium">Profile & security</span><span
+                                        class="flex size-7 items-center justify-center rounded-full bg-[#f4f2ee]"
+                                        aria-hidden="true">&rarr;</span></a><button type="button"
+                                    onclick="document.getElementById('logout-form').submit()"
+                                    class="mt-1 block w-full rounded-xl px-3 py-2.5 text-left text-xs text-[var(--koku-muted)] transition hover:bg-red-50 hover:text-red-700">Sign
+                                    out</button></div>
+                        @else
+                            <div class="relative overflow-hidden bg-[var(--koku-indigo-deep)] px-6 pb-8 pt-7 text-white">
+                                <div class="absolute -right-12 -top-16 size-40 rounded-full bg-white/10 blur-2xl"></div>
+                                <span class="relative flex size-10 items-center justify-center rounded-xl bg-white/10"><svg
+                                        class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <circle cx="12" cy="8" r="3.5" />
+                                        <path d="M5.5 20a6.5 6.5 0 0113 0" />
+                                    </svg></span>
+                                <h2 class="relative mt-5 font-serif text-2xl tracking-[-.04em]">Your collection,<br>made
+                                    personal.</h2>
+                                <p class="relative mt-3 text-xs leading-5 text-white/55">Save favourites, follow orders and
+                                    enjoy a faster checkout.</p>
+                            </div>
+                            <div class="p-4"><a href="{{ route('login') }}"
+                                    class="block rounded-2xl bg-[var(--koku-indigo)] px-4 py-3.5 text-center text-xs font-medium text-white shadow-lg shadow-[var(--koku-indigo)]/20 transition hover:-translate-y-0.5 hover:bg-[var(--koku-indigo-deep)]">Sign
+                                    in to Koku</a><a href="{{ route('register') }}"
+                                    class="mt-2 block rounded-2xl px-4 py-3 text-center text-xs font-medium text-[var(--koku-indigo)] transition hover:bg-[#f4f2ee]">Create
+                                    a new account</a>
+                                <div
+                                    class="mt-3 flex items-center justify-center gap-2 text-[10px] text-[var(--koku-muted)]">
+                                    <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.5">
+                                        <rect x="5" y="10" width="14" height="10" rx="2" />
+                                        <path d="M8 10V7a4 4 0 018 0v3" />
+                                    </svg> Secure, private access
+                                </div>
+                            </div>
+                        @endauth
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div x-show="menuOpen" x-collapse class="pb-3">
+    <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">@csrf</form>
+
+    <div x-show="activeMenu" x-transition.opacity x-cloak @mouseenter="hovered = true"
+        class="absolute inset-x-0 top-full border-b border-[var(--koku-line)] bg-[var(--koku-white)] text-[var(--koku-ink)] shadow-[0_18px_35px_rgba(25,26,24,0.08)]">
+        <div class="koku-shell">
+            @foreach ($megaMenus as $key => $menu)
+                <div x-show="activeMenu === '{{ $key }}'" x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="translate-y-2 opacity-0" x-transition:enter-end="translate-y-0 opacity-100" class="grid h-[19rem] grid-cols-3 content-start gap-x-20 py-10">
                         @foreach ($menu['columns'] as $column)
-                            <div x-data="{ colOpen: false }" class="border-t border-base-200 first:border-t-0">
-                                <button type="button" @click="colOpen = !colOpen"
-                                    class="w-full flex items-center justify-between py-3 pl-4 pr-1  font-medium text-base">
-                                    {{ $column['title'] }}
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="h-3.5 w-3.5 transition-transform duration-200"
-                                        :class="colOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <ul x-show="colOpen" x-collapse class="pb-3 pl-12 space-y-2.5">
-                                    @foreach ($column['links'] as $link)
-                                        <li><a href="#" class="text-base">{{ $link }}</a></li>
+                            <div>
+                                <div class="mb-6 flex items-center gap-4"><p class="koku-eyebrow text-[var(--koku-muted)]">{{ $column['title'] }}</p><span class="h-px flex-1 bg-[var(--koku-line)]"></span></div>
+                                <ul class="space-y-3.5 text-[15px]">
+                                    @foreach ($column['links'] as [$label, $href])
+                                        <li><a href="{{ $href }}" class="group/link inline-flex items-center gap-2 transition-colors hover:text-[var(--koku-indigo)]"><span>{{ $label }}</span><span class="-translate-x-1 opacity-0 transition group-hover/link:translate-x-0 group-hover/link:opacity-100">→</span></a></li>
                                     @endforeach
                                 </ul>
                             </div>
                         @endforeach
-                    </div>
                 </div>
             @endforeach
-
-            <div class="pt-4">
-                @auth
-                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 py-3 text-sm font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                        Account
-                    </a>
-                    <button type="button" onclick="document.getElementById('logout-form').submit()"
-                        class="flex items-center gap-2 py-3 text-sm font-medium">
-                        Log Out
-                    </button>
-                @else
-                    <a href="{{ route('login') }}" class="flex items-center gap-2 py-3 text-sm font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                        Account
-                    </a>
-                @endauth
-            </div>
         </div>
     </div>
 
+    <div x-show="searchOpen" x-cloak
+        class="fixed inset-0 z-[70] flex items-start justify-center bg-[var(--koku-indigo-deep)]/55 px-4 pt-24 text-[var(--koku-ink)] backdrop-blur-sm sm:pt-32"
+        @click.self="searchOpen=false" @keydown.escape.window="searchOpen = false">
+        <div x-transition.origin.top
+            class="w-full max-w-2xl rounded-3xl bg-white p-5 shadow-[0_30px_90px_rgba(10,18,35,.3)] sm:p-7">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="koku-eyebrow text-[var(--koku-indigo)]">Search Koku</p>
+                    <p class="mt-1 text-xs text-[var(--koku-muted)]">Find by watch, maker or movement</p>
+                </div><button type="button" @click="searchOpen=false"
+                    class="flex size-9 items-center justify-center rounded-full bg-[#f4f2ee]"
+                    aria-label="Close search">×</button>
+            </div>
+            <form action="{{ route('shop.index') }}" method="GET"
+                class="mt-5 flex items-center rounded-2xl border border-[var(--koku-line)] bg-[#f8f7f4] px-4 focus-within:border-[var(--koku-indigo)] focus-within:bg-white">
+                <svg class="size-5 shrink-0 text-[var(--koku-muted)]" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="6.5" />
+                    <path d="m16 16 4 4" />
+                </svg><input autofocus type="search" name="search" placeholder="Search watches…"
+                    class="min-w-0 flex-1 border-0 bg-transparent px-3 py-4 text-sm shadow-none placeholder:text-[var(--koku-muted)]/60 focus:ring-0"><button
+                    class="rounded-xl bg-[var(--koku-indigo)] px-4 py-2.5 text-xs font-medium text-white"
+                    aria-label="Submit search">Search</button>
+            </form>
+            <div class="mt-4 flex flex-wrap gap-2"><span
+                    class="text-[10px] uppercase tracking-[.12em] text-[var(--koku-muted)]">Popular</span><a
+                    href="{{ route('shop.index', ['movements' => ['automatic']]) }}"
+                    class="rounded-full bg-[#f4f2ee] px-3 py-1.5 text-[10px]">Automatic</a><a
+                    href="{{ route('shop.index', ['movements' => ['quartz']]) }}"
+                    class="rounded-full bg-[#f4f2ee] px-3 py-1.5 text-[10px]">Quartz</a></div>
+        </div>
+    </div>
+
+    <div x-show="mobileOpen" x-transition.opacity x-cloak @click="mobileOpen = false"
+        class="fixed inset-0 z-40 bg-black/45 lg:hidden"></div>
+    <div x-show="mobileOpen" x-cloak x-transition:enter="transition duration-300"
+        x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition duration-200" x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="-translate-x-full"
+        class="fixed inset-y-0 left-0 z-50 w-full max-w-md overflow-y-auto bg-[var(--koku-white)] text-[var(--koku-ink)] lg:hidden">
+        <div class="flex h-[4.75rem] items-center justify-between border-b border-[var(--koku-line)] px-5">
+            <span class="font-serif text-2xl font-semibold tracking-[-0.06em]">Koku</span>
+            <button type="button" @click="mobileOpen = false" class="koku-icon-button" aria-label="Close menu"><svg
+                    class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="m5 5 14 14M19 5 5 19" />
+                </svg></button>
+        </div>
+        <div class="px-5 py-3">
+            @foreach ($megaMenus as $menu)
+                <div x-data="{ open: false }" class="border-b border-[var(--koku-line)]">
+                    <button type="button" @click="open = !open"
+                        class="flex w-full items-center justify-between py-5 font-serif text-xl"><span>{{ $menu['label'] }}</span><span
+                            class="text-[var(--koku-indigo)]" x-text="open ? '−' : '+'"></span></button>
+                    <div x-show="open" x-collapse class="pb-6">
+                        @foreach ($menu['columns'] as $column)
+                            <p class="koku-eyebrow mb-3 mt-5 text-[var(--koku-muted)] first:mt-0">{{ $column['title'] }}</p>
+                            <ul class="space-y-3 text-sm">
+                                @foreach ($column['links'] as [$label, $href])
+                                <li><a href="{{ $href }}">{{ $label }}</a></li>@endforeach
+                            </ul>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+            <div class="grid grid-cols-2 gap-px bg-[var(--koku-line)] mt-8 border border-[var(--koku-line)]">
+                <a href="{{ route('wishlist.index') }}"
+                    class="bg-[var(--koku-white)] p-4 text-center text-sm">Wishlist</a>
+                <a href="{{ auth()->check() ? route('profile.edit') : route('login') }}"
+                    class="bg-[var(--koku-white)] p-4 text-center text-sm">Account</a>
+            </div>
+            <a href="{{ route('community.index') }}"
+                class="mt-3 block rounded-xl bg-[var(--koku-indigo)] px-4 py-3 text-center text-sm text-white">Wrist
+                Stories community</a>
+            <div class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-3 text-xs text-[var(--koku-muted)]">
+                <a href="{{ route('about') }}">About</a>
+                <a href="{{ route('faqs') }}">FAQs</a>
+                <a href="{{ route('contact') }}">Contact</a>
+            </div>
+        </div>
+    </div>
 </nav>

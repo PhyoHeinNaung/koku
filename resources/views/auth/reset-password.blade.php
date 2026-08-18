@@ -1,39 +1,4 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
-
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
+    <p class="koku-eyebrow text-[var(--koku-indigo)]">Secure reset</p><h1 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Choose a new password.</h1><p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">Use at least eight characters and choose something unique to this account.</p>
+    <form method="POST" action="{{ route('password.store') }}" class="mt-9 space-y-5" x-data="{ show: false }">@csrf<input type="hidden" name="token" value="{{ $request->route('token') }}"><div><label class="koku-field-label" for="email">Email address</label><input id="email" class="koku-auth-field" type="email" name="email" value="{{ old('email',$request->email) }}" required autofocus autocomplete="username">@error('email')<p class="koku-field-error">{{ $message }}</p>@enderror</div><div><label class="koku-field-label" for="password">New password</label><div class="relative"><input id="password" class="koku-auth-field pr-16" :type="show ? 'text' : 'password'" name="password" required autocomplete="new-password"><button type="button" @click="show=!show" class="absolute inset-y-0 right-0 px-4 text-[10px] uppercase tracking-[.1em] text-[var(--koku-muted)]" x-text="show ? 'Hide' : 'Show'"></button></div>@error('password')<p class="koku-field-error">{{ $message }}</p>@enderror</div><div><label class="koku-field-label" for="password_confirmation">Confirm new password</label><input id="password_confirmation" class="koku-auth-field" :type="show ? 'text' : 'password'" name="password_confirmation" required autocomplete="new-password"></div><button class="koku-auth-button">Save new password <span>→</span></button></form>
 </x-guest-layout>

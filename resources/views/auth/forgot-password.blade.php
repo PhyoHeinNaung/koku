@@ -1,25 +1,7 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
+    <div class="flex size-12 items-center justify-center border border-[var(--koku-line)] bg-white text-[var(--koku-indigo)]"><svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="10" width="14" height="10"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+    <p class="mt-7 koku-eyebrow text-[var(--koku-indigo)]">Account recovery</p><h1 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Find your way back.</h1><p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">Enter the email connected to your Koku account. We will send a secure password reset link.</p>
+    <x-auth-session-status class="mt-7 border-l-2 border-emerald-600 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" :status="session('status')"/>
+    <form method="POST" action="{{ route('password.email') }}" class="mt-9 space-y-6">@csrf<div><label class="koku-field-label" for="email">Email address</label><input id="email" class="koku-auth-field" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email" placeholder="you@example.com">@error('email')<p class="koku-field-error">{{ $message }}</p>@enderror</div><button class="koku-auth-button">Send reset link <span>→</span></button></form>
+    <a href="{{ route('login') }}" class="mt-7 flex items-center justify-center gap-2 text-xs text-[var(--koku-muted)] hover:text-[var(--koku-indigo)]"><span>←</span> Back to sign in</a>
 </x-guest-layout>

@@ -1,52 +1,12 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <div><p class="koku-eyebrow text-[var(--koku-indigo)]">Your Koku account</p><h1 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Join the collection.</h1><p class="mt-4 text-sm leading-7 text-[var(--koku-muted)]">Save favourites, enjoy a faster checkout and keep every order in one considered place.</p></div>
+    <form method="POST" action="{{ route('register') }}" class="mt-9 space-y-5">
         @csrf
-
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        <div><label class="koku-field-label" for="name">Full name</label><input id="name" class="koku-auth-field" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Your full name">@error('name')<p class="koku-field-error">{{ $message }}</p>@enderror</div>
+        <div><label class="koku-field-label" for="email">Email address</label><input id="email" class="koku-auth-field" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="you@example.com">@error('email')<p class="koku-field-error">{{ $message }}</p>@enderror</div>
+        <div class="grid gap-5 sm:grid-cols-2" x-data="{ show: false }"><div><label class="koku-field-label" for="password">Password</label><div class="relative"><input id="password" class="koku-auth-field pr-14" :type="show ? 'text' : 'password'" name="password" required autocomplete="new-password" placeholder="8+ characters"><button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-3 text-[9px] uppercase tracking-[.08em] text-[var(--koku-muted)]" x-text="show ? 'Hide' : 'Show'"></button></div>@error('password')<p class="koku-field-error">{{ $message }}</p>@enderror</div><div><label class="koku-field-label" for="password_confirmation">Confirm password</label><input id="password_confirmation" class="koku-auth-field" :type="show ? 'text' : 'password'" name="password_confirmation" required autocomplete="new-password" placeholder="Repeat password"></div></div>
+        <p class="text-[11px] leading-5 text-[var(--koku-muted)]">By creating an account, you agree to Koku securely storing your account details to provide shopping and order services.</p>
+        <button class="koku-auth-button">Create my account <span aria-hidden="true">→</span></button>
     </form>
+    <p class="mt-7 text-center text-xs text-[var(--koku-muted)]">Already have an account? <a href="{{ route('login') }}" class="font-medium text-[var(--koku-indigo)] underline underline-offset-4">Sign in</a></p>
 </x-guest-layout>

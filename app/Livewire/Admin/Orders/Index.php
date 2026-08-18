@@ -165,6 +165,9 @@ class Index extends Component
             'shipped' => Order::where('status', 'shipped')->count(),
             'delivered' => Order::where('status', 'delivered')->count(),
             'cancelled' => Order::where('status', 'cancelled')->count(),
+            'gross' => (float) Order::sum('total'),
+            'average' => (float) Order::avg('total'),
+            'paid' => Order::whereHas('latestPayment', fn (Builder $query) => $query->where('status', 'paid'))->count(),
         ];
 
         $selectedOrder = $this->selectedOrderId

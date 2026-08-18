@@ -1,4 +1,4 @@
-<div class="mx-auto w-full max-w-[1500px] space-y-6">
+<div class="admin-page admin-workflow block">
     <x-admin.page-header title="Admin profile" />
 
     <div class="grid items-start gap-6 xl:grid-cols-[20rem_minmax(0,1fr)]">

@@ -1,8 +1,6 @@
-<div class="mx-auto w-full max-w-[1500px] space-y-5"
-    x-data="{ pageTab: 'details', specTab: 'case', watchType: @entangle('watch_type') }"
-    x-effect="if (watchType === 'traditional' && specTab === 'smart') specTab = 'case'">
-    <header class="flex flex-col gap-4 rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-4 shadow-admin-panel sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div class="flex min-w-0 items-center gap-3">
+<div class="admin-record-editor">
+    <header class="admin-editor-topbar">
+        <div class="admin-editor-identity">
             <a href="{{ route('admin.products.index') }}"
                 class="btn btn-square btn-sm shrink-0 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] shadow-admin-control hover:bg-[var(--admin-surface-soft)]"
                 aria-label="Back to products">
@@ -11,9 +9,9 @@
                 </svg>
             </a>
             <div class="min-w-0">
-                <p class="text-[10px] font-medium uppercase tracking-[0.12em] text-base-content/40">Catalog · Products</p>
-                <div class="mt-0.5 flex min-w-0 items-center gap-2">
-                    <h1 class="truncate text-lg font-semibold tracking-tight sm:text-xl">
+                <p class="admin-editor-breadcrumb">Catalog / Products</p>
+                <div class="admin-editor-title-row">
+                    <h1>
                         {{ $product ? $product->name : 'New product' }}
                     </h1>
                     @if ($product)
@@ -25,10 +23,10 @@
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-2">
-            <a href="{{ route('admin.products.index') }}" class="btn btn-ghost btn-sm h-10 min-h-10 rounded-xl px-4">Cancel</a>
+        <div class="admin-editor-actions">
+            <a href="{{ route('admin.products.index') }}" class="admin-editor-cancel">Cancel</a>
             <button type="submit" form="product-form" wire:loading.attr="disabled" wire:target="save"
-                class="btn btn-primary btn-sm h-10 min-h-10 min-w-32 rounded-xl px-5 shadow-[0_10px_24px_rgba(255,122,0,.2)]">
+                class="admin-editor-save">
                 <span wire:loading wire:target="save" class="loading loading-spinner loading-xs"></span>
                 <span wire:loading.remove wire:target="save">{{ $product ? 'Save changes' : 'Create product' }}</span>
                 <span wire:loading wire:target="save">Saving...</span>
@@ -36,45 +34,8 @@
         </div>
     </header>
 
-    <nav class="overflow-x-auto rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface-sunken)] p-1.5 shadow-inner [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        aria-label="Product editor sections">
-        <div class="flex min-w-max gap-1" role="tablist">
-            <button type="button" role="tab" @click="pageTab = 'details'"
-                :aria-selected="(pageTab === 'details').toString()"
-                class="flex h-9 items-center gap-2 rounded-xl border px-4 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                :class="pageTab === 'details' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:bg-[var(--admin-surface-soft)] hover:text-base-content/75'">
-                Details
-            </button>
-            <button type="button" role="tab" @click="pageTab = 'specifications'"
-                :aria-selected="(pageTab === 'specifications').toString()"
-                class="flex h-9 items-center gap-2 rounded-xl border px-4 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                :class="pageTab === 'specifications' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:bg-[var(--admin-surface-soft)] hover:text-base-content/75'">
-                Specifications
-            </button>
-            @if ($product)
-                <button type="button" role="tab" @click="pageTab = 'variants'"
-                    :aria-selected="(pageTab === 'variants').toString()"
-                    class="flex h-9 items-center gap-2 rounded-xl border px-4 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                    :class="pageTab === 'variants' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:bg-[var(--admin-surface-soft)] hover:text-base-content/75'">
-                    Variants
-                    <span class="badge badge-ghost badge-xs">{{ $product->variants()->count() }}</span>
-                </button>
-            @else
-                <span class="flex h-9 cursor-not-allowed items-center gap-2 rounded-xl px-4 text-[11px] font-semibold text-base-content/25"
-                    title="Create the product before adding variants">
-                    Variants
-                    <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <rect x="6" y="10" width="12" height="9" rx="2" />
-                        <path d="M9 10V7a3 3 0 0 1 6 0v3" />
-                    </svg>
-                </span>
-            @endif
-        </div>
-    </nav>
-
-    <form id="product-form" wire:submit="save">
-        <div x-show="pageTab === 'details'" x-cloak
-            class="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_21rem]">
+    <form id="product-form" wire:submit="save" class="admin-editor-canvas">
+        <div class="admin-editor-layout">
             <x-admin.form-section title="Product information" description="Customer-facing catalog content">
                 <x-slot:icon>
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -118,7 +79,7 @@
                 </div>
             </x-admin.form-section>
 
-            <aside class="space-y-5 xl:sticky xl:top-20">
+            <aside class="admin-editor-rail">
                 <x-admin.form-section title="Classification" description="Catalog placement">
                     <div class="space-y-4">
                         <x-admin.form-field label="Audience" name="gender" required>
@@ -172,7 +133,7 @@
             </aside>
         </div>
 
-        <div x-show="pageTab === 'specifications'" x-cloak>
+        <div class="admin-editor-single mt-8">
             <x-admin.form-section title="Shared specifications" description="Defaults inherited by every variant">
                 <x-slot:icon>
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -181,39 +142,8 @@
                     </svg>
                 </x-slot:icon>
 
-                <div
-                    class="-mx-1 mb-6 overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-sunken)] p-1.5 shadow-inner [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                    <div class="flex min-w-max gap-1" role="tablist" aria-label="Specification groups">
-                        @foreach ([
-                            'case' => 'Case & dial',
-                            'movement' => 'Movement',
-                            'strap' => 'Strap & origin',
-                        ] as $tab => $label)
-                            <button type="button" role="tab" @click="specTab = '{{ $tab }}'"
-                                :aria-selected="(specTab === '{{ $tab }}').toString()"
-                                class="h-9 rounded-lg border px-3 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                                :class="specTab === '{{ $tab }}' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:text-base-content'">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                        @if (in_array($watch_type, ['smart', 'hybrid'], true))
-                            <button type="button" role="tab" @click="specTab = 'smart'"
-                                :aria-selected="(specTab === 'smart').toString()"
-                                class="h-9 rounded-lg border px-3 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                                :class="specTab === 'smart' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:text-base-content'">
-                                Smart features
-                            </button>
-                        @endif
-                        <button type="button" role="tab" @click="specTab = 'additional'"
-                            :aria-selected="(specTab === 'additional').toString()"
-                            class="h-9 rounded-lg border px-3 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                            :class="specTab === 'additional' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:text-base-content'">
-                            Additional
-                        </button>
-                    </div>
-                </div>
-
-                <div x-show="specTab === 'case'" x-cloak class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <h3 class="mb-4 text-xs font-semibold text-base-content">Case and dial</h3>
+                <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach ([
                         'case_size' => 'Case size',
                         'case_material' => 'Case material',
@@ -230,7 +160,8 @@
                     @endforeach
                 </div>
 
-                <div x-show="specTab === 'movement'" x-cloak class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <h3 class="mb-4 mt-8 border-t border-[var(--admin-border)] pt-6 text-xs font-semibold text-base-content">Movement</h3>
+                <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach ([
                         'movement_caliber' => 'Movement caliber',
                         'power_reserve' => 'Power reserve',
@@ -245,7 +176,8 @@
                     @endforeach
                 </div>
 
-                <div x-show="specTab === 'strap'" x-cloak class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <h3 class="mb-4 mt-8 border-t border-[var(--admin-border)] pt-6 text-xs font-semibold text-base-content">Strap and origin</h3>
+                <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach ([
                         'strap_material' => 'Strap material',
                         'clasp_type' => 'Clasp type',
@@ -259,7 +191,8 @@
                 </div>
 
                 @if (in_array($watch_type, ['smart', 'hybrid'], true))
-                    <div x-show="specTab === 'smart'" x-cloak class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <h3 class="mb-4 mt-8 border-t border-[var(--admin-border)] pt-6 text-xs font-semibold text-base-content">Smart features</h3>
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                         @foreach ([
                             'battery_life' => 'Battery life',
                             'display_type' => 'Display type',
@@ -274,8 +207,9 @@
                     </div>
                 @endif
 
-                <div x-show="specTab === 'additional'" x-cloak>
-                    <div class="mb-4 flex justify-end">
+                <div>
+                    <div class="mb-4 mt-8 flex items-center justify-between border-t border-[var(--admin-border)] pt-6">
+                        <div><h3 class="text-xs font-semibold text-base-content">Additional attributes</h3><p class="mt-1 text-[11px] text-base-content/45">Optional details that do not fit the standard fields.</p></div>
                         <button type="button" wire:click="addCustomSpec"
                             class="btn btn-xs h-9 min-h-9 gap-1.5 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] px-3 shadow-admin-control hover:border-accent/35 hover:bg-accent/10">
                             <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -310,7 +244,7 @@
     </form>
 
     @if ($product)
-        <div x-show="pageTab === 'variants'" x-cloak>
+        <div class="mx-auto w-full max-w-[82rem] px-4 pb-10 sm:px-6 xl:px-8">
             <livewire:admin.products.variants :product="$product" :key="'variants-' . $product->id" />
         </div>
     @endif

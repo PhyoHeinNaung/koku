@@ -11,20 +11,53 @@ use App\Livewire\Customer\Orders\Show as OrdersShow;
 use App\Livewire\Customer\Shop\Index as ShopIndex;
 use App\Livewire\Customer\Shop\Show as ShopShow;
 use App\Livewire\Customer\Wishlist\Index as WishlistIndex;
+use App\Livewire\Customer\Community\Index as CommunityIndex;
+use App\Livewire\Customer\Community\Show as CommunityShow;
+use App\Livewire\Customer\Community\Create as CommunityCreate;
+use App\Models\Product;
+use App\Models\ShippingZone;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('customer.home');
+    $featuredProducts = Product::query()
+        ->with(['brand', 'category', 'variants.images'])
+        ->where('is_active', true)
+        ->whereHas('variants', fn ($query) => $query->where('is_active', true))
+        ->orderByDesc('is_featured')
+        ->latest()
+        ->take(4)
+        ->get();
+
+    return view('customer.home', compact('featuredProducts'));
 })->name('home');
+
+Route::view('/about', 'customer.about')->name('about');
+Route::view('/contact', 'customer.contact')->name('contact');
+Route::view('/faqs', 'customer.faqs')->name('faqs');
+Route::get('/shipping-and-returns', function () {
+    $shippingZones = ShippingZone::query()
+        ->with(['locations' => fn ($query) => $query->where('is_active', true)->orderBy('city')])
+        ->where('is_active', true)
+        ->orderBy('fee')
+        ->get();
+
+    return view('customer.shipping-returns', compact('shippingZones'));
+})->name('shipping-returns');
+Route::view('/watch-care-and-warranty', 'customer.watch-care')->name('watch-care');
+Route::view('/privacy', 'customer.privacy')->name('privacy');
+Route::view('/terms', 'customer.terms')->name('terms');
 
 Route::get('/shop', ShopIndex::class)->name('shop.index');
 Route::get('/products/{product:slug}', ShopShow::class)->name('shop.product');
 Route::get('/wishlist', WishlistIndex::class)->name('wishlist.index');
 Route::get('/cart', CartIndex::class)->name('cart.index');
+Route::get('/community', CommunityIndex::class)->name('community.index');
+Route::get('/community/{post}', CommunityShow::class)->name('community.show');
 Route::get('/checkout', CheckoutIndex::class)->name('checkout.index');
 Route::get('/checkout/success', CheckoutConfirmation::class)->name('checkout.success');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/community/create/story', CommunityCreate::class)->name('community.create');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

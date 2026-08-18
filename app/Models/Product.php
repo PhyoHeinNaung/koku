@@ -59,6 +59,16 @@ class Product extends Model
         return $this->hasMany(WishlistItem::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function communityPosts(): HasMany
+    {
+        return $this->hasMany(CommunityPost::class);
+    }
+
     public function defaultVariant(): ?ProductVariant
     {
         $flaggedDefaults = $this->variants->where('is_default', true);

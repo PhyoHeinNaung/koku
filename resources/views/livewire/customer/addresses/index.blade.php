@@ -1,61 +1,17 @@
-<div class="px-6 sm:px-10 lg:px-16 py-10 max-w-3xl">
-
-    <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">My Addresses</h1>
-        <a href="{{ route('addresses.create') }}"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">
-            + Add Address
-        </a>
-    </div>
-
-    @if (session('success'))
-        <div class="mb-6 px-4 py-3 bg-green-50 text-green-800 text-sm rounded-lg">
-            {{ session('success') }}
+<div class="relative min-h-[70vh] overflow-hidden bg-[#f4f2ee] py-8 sm:py-12 lg:py-16">
+    <div class="pointer-events-none absolute -left-48 bottom-0 size-[34rem] rounded-full bg-[#b99872]/10 blur-3xl"></div>
+    <main class="koku-shell relative">
+        <header class="rounded-[2rem] bg-[var(--koku-indigo-deep)] px-6 py-9 text-white shadow-[0_28px_70px_rgba(24,34,57,.14)] sm:px-10 lg:px-12"><div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end"><div><span class="inline-flex items-center gap-2 rounded-full bg-white/[.08] px-3 py-1.5 text-[10px] uppercase tracking-[.16em] text-white/65"><svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0Z"/><circle cx="12" cy="10" r="2.5"/></svg> Delivery book</span><h1 class="mt-5 font-serif text-4xl tracking-[-.05em] sm:text-5xl">Saved addresses</h1><p class="mt-3 text-sm text-white/55">Keep delivery details ready for a seamless checkout.</p></div><a href="{{ route('addresses.create') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-xs font-medium text-[var(--koku-indigo)] shadow-lg transition hover:-translate-y-0.5">Add new address <span>+</span></a></div></header>
+        <div class="mt-6 grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
+            <aside class="h-fit rounded-3xl border border-white/80 bg-white/75 p-3 shadow-[0_18px_50px_rgba(31,38,53,.06)] backdrop-blur-xl lg:sticky lg:top-28"><nav class="space-y-1 text-sm"><a href="{{ route('profile.edit') }}" class="block rounded-2xl px-4 py-3.5 text-[var(--koku-muted)] hover:bg-[#f4f2ee]">Profile & security</a><a href="{{ route('orders.index') }}" class="block rounded-2xl px-4 py-3.5 text-[var(--koku-muted)] hover:bg-[#f4f2ee]">Orders</a><a href="{{ route('addresses.index') }}" class="block rounded-2xl bg-[var(--koku-indigo)] px-4 py-3.5 text-white shadow-lg shadow-[var(--koku-indigo)]/15">Addresses</a><a href="{{ route('wishlist.index') }}" class="block rounded-2xl px-4 py-3.5 text-[var(--koku-muted)] hover:bg-[#f4f2ee]">Wishlist</a></nav></aside>
+            <section>
+                @if(session('success'))<div class="mb-4 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><i class="size-2 rounded-full bg-emerald-500"></i>{{ session('success') }}</div>@endif
+                @if($addresses->isEmpty())
+                    <div class="flex min-h-96 flex-col items-center justify-center rounded-3xl border border-white/80 bg-white/80 p-8 text-center shadow-[0_18px_50px_rgba(31,38,53,.06)]"><span class="flex size-16 items-center justify-center rounded-2xl bg-[#f1efeb] text-[var(--koku-indigo)]"><svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><h2 class="mt-6 font-serif text-2xl">No saved addresses.</h2><p class="mt-2 text-sm text-[var(--koku-muted)]">Add a delivery address to make checkout faster.</p><a href="{{ route('addresses.create') }}" class="mt-7 rounded-2xl bg-[var(--koku-indigo)] px-6 py-3.5 text-xs font-medium text-white shadow-lg shadow-[var(--koku-indigo)]/20">Add your first address</a></div>
+                @else
+                    <div class="grid gap-5 sm:grid-cols-2">@foreach($addresses as $address)<article wire:key="address-{{ $address->id }}" class="group relative overflow-hidden rounded-3xl border {{ $address->is_default ? 'border-[var(--koku-indigo)]/25' : 'border-white/80' }} bg-white/85 p-6 shadow-[0_16px_45px_rgba(31,38,53,.06)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(31,38,53,.1)]"><div class="flex items-start justify-between"><span class="flex size-11 items-center justify-center rounded-2xl bg-[#f1efeb] text-[var(--koku-indigo)]"><svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>@if($address->is_default)<span class="rounded-full bg-[var(--koku-indigo)]/8 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[.12em] text-[var(--koku-indigo)]">Default</span>@endif</div><h3 class="mt-5 font-serif text-xl">{{ $address->label ?: 'Address' }}</h3><address class="mt-3 text-xs not-italic leading-6 text-[var(--koku-muted)]"><strong class="text-[var(--koku-ink)]">{{ $address->full_name }}</strong><br>{{ $address->address_line1 }}@if($address->address_line2), {{ $address->address_line2 }}@endif<br>{{ $address->city }}@if($address->district_area), {{ $address->district_area }}@endif, {{ $address->country }}<br>{{ $address->phone }}</address><div class="mt-6 flex items-center gap-2 border-t border-[var(--koku-line)]/60 pt-4"><a href="{{ route('addresses.edit',$address) }}" class="rounded-xl bg-[#f4f2ee] px-4 py-2.5 text-xs font-medium transition hover:bg-[#ebe7e0]">Edit</a><button wire:click="deleteAddress({{ $address->id }})" wire:confirm="Delete this address?" class="rounded-xl px-3 py-2.5 text-xs text-[var(--koku-muted)] hover:bg-red-50 hover:text-red-700">Delete</button>@unless($address->is_default)<button wire:click="setDefault({{ $address->id }})" class="ml-auto text-xs font-medium text-[var(--koku-indigo)]">Set default</button>@endunless</div></article>@endforeach</div>
+                @endif
+            </section>
         </div>
-    @endif
-
-    @if ($addresses->isEmpty())
-        <p class="text-gray-400 text-center py-16">You haven't saved any addresses yet.</p>
-    @else
-        <div class="space-y-4">
-            @foreach ($addresses as $address)
-                <div wire:key="address-{{ $address->id }}" class="border border-gray-200 rounded-xl p-5">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <p class="text-sm font-semibold text-gray-900">{{ $address->label ?: 'Address' }}</p>
-                                @if ($address->is_default)
-                                    <span class="px-2 py-0.5 bg-gray-900 text-white text-[10px] rounded-full">Default</span>
-                                @endif
-                            </div>
-                            <p class="text-sm text-gray-600 mt-1">{{ $address->full_name }} &middot; {{ $address->phone }}</p>
-                            <p class="text-sm text-gray-500 mt-1">
-                                {{ $address->address_line1 }}{{ $address->address_line2 ? ', ' . $address->address_line2 : '' }},
-                                {{ $address->city }}{{ $address->district_area ? ', ' . $address->district_area : '' }},
-                                {{ $address->state_region }}, {{ $address->country }}
-                                {{ $address->postal_code }}
-                            </p>
-                        </div>
-                        <div class="flex flex-col items-end gap-2 shrink-0">
-                            <div class="flex items-center gap-3">
-                                <a href="{{ route('addresses.edit', $address) }}"
-                                    class="text-sm text-gray-600 hover:text-gray-900">Edit</a>
-                                <button type="button" wire:click="deleteAddress({{ $address->id }})"
-                                    wire:confirm="Delete this address?" class="text-sm text-red-600 hover:text-red-800">
-                                    Delete
-                                </button>
-                            </div>
-                            @unless ($address->is_default)
-                                <button type="button" wire:click="setDefault({{ $address->id }})"
-                                    class="text-xs text-gray-500 hover:text-gray-900 underline">
-                                    Set as default
-                                </button>
-                            @endunless
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    @endif
-
+    </main>
 </div>

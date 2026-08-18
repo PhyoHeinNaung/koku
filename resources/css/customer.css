@@ -1,0 +1,364 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin "daisyui" {
+    themes: koku --default;
+}
+@plugin "daisyui/theme" {
+    name: "koku";
+    default: true;
+    prefersdark: false;
+    color-scheme: light;
+
+    --color-base-100: #ffffff;
+    --color-base-200: #ffffff;
+    --color-base-300: #eeeeee;
+    --color-base-content: #191a18;
+    --color-primary: #293d68;
+    --color-primary-content: #ffffff;
+    --color-secondary: #191a18;
+    --color-secondary-content: #ffffff;
+    --color-accent: #293d68;
+    --color-accent-content: #ffffff;
+    --color-neutral: #191a18;
+    --color-neutral-content: #fbfaf6;
+    --radius-selector: 0;
+    --radius-field: 0;
+    --radius-box: 0;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
+}
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Noto Serif JP', ui-serif, Georgia, serif;
+}
+
+@layer base {
+    :root {
+        --koku-paper: #ffffff;
+        --koku-white: #ffffff;
+        --koku-sand: #e3d9cc;
+        --koku-ink: #1d1d1a;
+        --koku-muted: #746f67;
+        --koku-line: #d8cfc3;
+        --koku-indigo: #293d68;
+        --koku-indigo-deep: #192640;
+        --koku-clay: #b66a4d;
+    }
+
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--koku-line);
+    }
+
+    html {
+        background: #ffffff;
+        color: var(--koku-ink);
+    }
+
+    body {
+        background: #ffffff;
+        letter-spacing: -0.01em;
+    }
+
+    button, a, input, select, textarea {
+        border-radius: 0;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--koku-indigo);
+        outline-offset: 3px;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+.range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    width: 8px;
+    height: 14px;
+    border: 0;
+    border-radius: 0;
+    appearance: none;
+    background: var(--koku-indigo-deep);
+}
+
+.range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    width: 8px;
+    height: 14px;
+    border: 0;
+    border-radius: 0;
+    background: var(--koku-indigo-deep);
+}
+
+@layer components {
+    .koku-shell {
+        width: min(100% - 2rem, 90rem);
+        margin-inline: auto;
+    }
+
+    .koku-eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+    }
+
+    .koku-icon-button {
+        display: inline-flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        transition: color 180ms ease, background-color 180ms ease;
+    }
+
+    .koku-icon-button:hover {
+        color: var(--koku-indigo);
+        background: color-mix(in srgb, var(--koku-indigo) 7%, transparent);
+    }
+
+    .koku-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 0.3rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        transition: color 180ms ease, gap 180ms ease;
+    }
+
+    .koku-link:hover {
+        gap: 1rem;
+        color: var(--koku-indigo);
+    }
+
+    .koku-product-image {
+        transition: transform 700ms cubic-bezier(.2,.75,.25,1);
+    }
+
+    .home-kicker {
+        font-size: .625rem;
+        font-weight: 600;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+
+    .group:hover .koku-product-image {
+        transform: scale(1.025);
+    }
+
+    .koku-field {
+        width: 100%;
+        border: 1px solid var(--koku-line);
+        background: var(--koku-white);
+        padding: 0.9rem 1rem;
+        font-size: 0.875rem;
+        box-shadow: none;
+    }
+
+    .koku-field:focus {
+        border-color: var(--koku-indigo);
+        outline: none;
+        box-shadow: 0 0 0 1px var(--koku-indigo);
+    }
+
+    .koku-field-label {
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--koku-muted);
+    }
+
+    .koku-field-error {
+        margin-top: 0.4rem;
+        font-size: 0.75rem;
+        color: #a33b32;
+    }
+
+    .koku-auth-field {
+        width: 100%;
+        border: 1px solid color-mix(in srgb, var(--koku-line) 85%, white);
+        background: white;
+        padding: 1rem 1.05rem;
+        font-size: 0.875rem;
+        color: var(--koku-ink);
+        box-shadow: 0 1px 0 rgba(25, 38, 64, .02);
+        transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .koku-auth-field::placeholder { color: #aaa49b; }
+    .koku-auth-field:hover { border-color: #bdb4a8; }
+    .koku-auth-field:focus {
+        border-color: var(--koku-indigo);
+        outline: none;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--koku-indigo) 10%, transparent);
+    }
+
+    .koku-auth-button {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--koku-indigo-deep);
+        padding: 1rem 1.25rem;
+        color: white;
+        font-size: .6875rem;
+        font-weight: 500;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        box-shadow: 0 12px 28px rgba(25, 38, 64, .14);
+        transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .koku-auth-button:hover {
+        background: var(--koku-indigo);
+        transform: translateY(-1px);
+        box-shadow: 0 16px 34px rgba(25, 38, 64, .2);
+    }
+
+    .koku-account-panel h2 { font-family: 'Noto Serif JP', ui-serif, serif; font-size: 1.25rem; color: var(--koku-ink); }
+    .koku-account-panel p { color: var(--koku-muted); }
+    .koku-account-panel label { color: var(--koku-muted); font-size: .75rem; }
+    .koku-account-panel input:not([type='checkbox']):not([type='radio']) { border-radius: 0; border-color: var(--koku-line); background: var(--koku-white); }
+    .koku-account-panel button[type='submit'] { border-radius: 0; background: var(--koku-indigo); color: white; }
+
+    .koku-modern-account h2 { font-family: 'Noto Serif JP', ui-serif, serif; font-size: 1.5rem; letter-spacing: -.035em; color: var(--koku-ink); }
+    .koku-modern-account p { color: var(--koku-muted); }
+    .koku-modern-account .koku-field { border-radius: .875rem; border-color: color-mix(in srgb, var(--koku-line) 78%, white); background: #f8f7f4; padding: 1rem 1.1rem; transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
+    .koku-modern-account .koku-field:hover { background: white; }
+    .koku-modern-account .koku-field:focus { border-color: var(--koku-indigo); background: white; box-shadow: 0 0 0 4px color-mix(in srgb, var(--koku-indigo) 9%, transparent); }
+    .koku-modern-account button[type='submit'] { border-radius: .875rem; background: var(--koku-indigo); color: white; box-shadow: 0 10px 24px color-mix(in srgb, var(--koku-indigo) 20%, transparent); transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease; }
+    .koku-modern-account button[type='submit']:hover { transform: translateY(-1px); background: var(--koku-indigo-deep); box-shadow: 0 14px 30px color-mix(in srgb, var(--koku-indigo) 25%, transparent); }
+
+    #reviews article .grid.grid-cols-3 { display: flex; flex-wrap: wrap; }
+    #reviews article .grid.grid-cols-3 img { width: 5rem; height: 5rem; border-radius: .75rem; object-fit: cover; }
+
+    .koku-home { background: #f2f0ea; color: #1b1d1a; }
+    .koku-home-label { font-size: .625rem; font-weight: 600; letter-spacing: .19em; line-height: 1.4; text-transform: uppercase; }
+    .koku-home-hero { position: relative; min-height: min(55rem, 100dvh); overflow: hidden; background: #111814; color: white; }
+    .koku-home-hero__image, .koku-home-hero__shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .koku-home-hero__image { object-fit: cover; object-position: 56% center; transform: scale(1.015); }
+    .koku-home-hero__shade { background: linear-gradient(90deg, rgba(8,13,10,.88) 0%, rgba(8,13,10,.48) 47%, rgba(8,13,10,.08) 75%), linear-gradient(0deg, rgba(8,13,10,.46), transparent 45%); }
+    .koku-home-hero__content { position: relative; z-index: 1; display: flex; min-height: min(55rem, 100dvh); align-items: flex-end; justify-content: space-between; gap: 4rem; padding-top: 10rem; padding-bottom: 4.5rem; }
+    .koku-home-hero__copy { max-width: 49rem; }
+    .koku-home-hero__copy > .koku-home-label { color: rgba(255,255,255,.66); }
+    .koku-home-hero h1 { margin-top: 1.6rem; font-family: 'Noto Serif JP', ui-serif, serif; font-size: clamp(3.45rem, 7.2vw, 7.6rem); font-weight: 500; letter-spacing: -.075em; line-height: .91; text-wrap: balance; }
+    .koku-home-hero h1 em { font-weight: 500; color: #d9c6a6; }
+    .koku-home-hero__intro { max-width: 31rem; margin-top: 2rem; color: rgba(255,255,255,.74); font-size: .95rem; line-height: 1.75; }
+    .koku-home-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 4rem; min-width: 15rem; margin-top: 2.25rem; padding: 1.05rem 1.15rem; background: #f4f1e9; color: #171b18; font-size: .6875rem; font-weight: 600; letter-spacing: .11em; text-transform: uppercase; transition: background-color 220ms ease, transform 220ms ease; }
+    .koku-home-button:hover { background: #d9c6a6; transform: translateY(-2px); }
+    .koku-home-button:active { transform: translateY(0); }
+    .koku-home-hero__note { width: 13rem; flex: 0 0 auto; border-top: 1px solid rgba(255,255,255,.38); padding-top: .85rem; font-size: .7rem; line-height: 1.7; color: rgba(255,255,255,.7); }
+    .koku-home-hero__note span { display: block; margin-bottom: .5rem; color: #d9c6a6; font-size: .6rem; letter-spacing: .14em; }
+    .koku-home-assurance { border-bottom: 1px solid #d4d0c6; background: #e9e5dc; }
+    .koku-home-assurance .koku-shell { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .koku-home-assurance p { padding: 1.15rem 2rem; border-left: 1px solid #d4d0c6; color: #6f706a; font-size: .6875rem; text-align: center; }
+    .koku-home-assurance p:last-child { border-right: 1px solid #d4d0c6; }
+    .koku-home-assurance span { color: #262925; font-weight: 600; }
+    .koku-home-departments { padding-top: 8rem; padding-bottom: 9rem; }
+    .koku-home-section-head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(17rem, .65fr); align-items: end; gap: 5rem; }
+    .koku-home-section-head .koku-home-label { color: #74746c; }
+    .koku-home-section-head h2 { max-width: 48rem; margin-top: 1rem; font-family: 'Noto Serif JP', ui-serif, serif; font-size: clamp(2.6rem, 5vw, 5.25rem); font-weight: 500; letter-spacing: -.06em; line-height: .98; }
+    .koku-home-section-head > p { max-width: 32rem; color: #6d6d66; font-size: .85rem; line-height: 1.9; }
+    .koku-home-department-list { margin-top: 5rem; border-top: 1px solid #bdb9ae; }
+    .koku-home-department { display: grid; grid-template-columns: 4rem minmax(10rem, .8fr) minmax(17rem, 1.2fr) auto; align-items: center; gap: 2rem; padding: 1.75rem 0; border-bottom: 1px solid #bdb9ae; transition: padding 240ms ease, background-color 240ms ease; }
+    .koku-home-department:hover { padding-inline: 1.25rem; background: #e8e4da; }
+    .koku-home-department__number { color: #88877f; font-size: .625rem; letter-spacing: .13em; }
+    .koku-home-department h3 { font-family: 'Noto Serif JP', ui-serif, serif; font-size: clamp(1.7rem, 3vw, 2.7rem); letter-spacing: -.045em; }
+    .koku-home-department p { color: #71716a; font-size: .78rem; line-height: 1.65; }
+    .koku-home-department__arrow { font-size: 1.2rem; transition: transform 240ms ease; }
+    .koku-home-department:hover .koku-home-department__arrow { transform: translate(3px, -3px); }
+    .koku-home-new { padding: 8rem 0 9rem; background: #fbfaf7; }
+    .koku-home-section-head--products { grid-template-columns: 1fr auto; }
+    .koku-home-text-link { display: inline-flex; width: max-content; align-items: center; gap: 1rem; border-bottom: 1px solid currentColor; padding-bottom: .4rem; font-size: .6875rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; transition: gap 220ms ease, color 220ms ease; }
+    .koku-home-text-link:hover { gap: 1.35rem; color: #6f593d; }
+    .koku-home-products { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4.5rem 1.25rem; margin-top: 4.5rem; }
+    .koku-home-product { grid-column: span 3; }
+    .koku-home-product:nth-child(even) { margin-top: 4.5rem; }
+    .koku-home-product__media { position: relative; display: block; aspect-ratio: 4 / 5.25; overflow: hidden; background: #e9e7e1; }
+    .koku-home-product__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms cubic-bezier(.2,.75,.25,1); }
+    .koku-home-product__media:hover img { transform: scale(1.035); }
+    .koku-home-product__flag { position: absolute; z-index: 1; top: .8rem; left: .8rem; padding: .4rem .5rem; background: #f7f4ec; color: #22241f; font-size: .55rem; font-weight: 600; letter-spacing: .11em; text-transform: uppercase; }
+    .koku-home-product__view { position: absolute; inset: auto .75rem .75rem; display: flex; justify-content: space-between; padding: .8rem .9rem; background: rgba(248,246,239,.93); color: #1c1f1b; font-size: .625rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; transform: translateY(calc(100% + 1rem)); transition: transform 260ms ease; }
+    .koku-home-product__media:hover .koku-home-product__view, .koku-home-product__media:focus-visible .koku-home-product__view { transform: translateY(0); }
+    .koku-home-product__details { padding-top: 1.15rem; }
+    .koku-home-product__details > p { color: #7a7972; font-size: .6rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+    .koku-home-product__details > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-top: .55rem; }
+    .koku-home-product__details h3 { font-family: 'Noto Serif JP', ui-serif, serif; font-size: 1rem; letter-spacing: -.025em; line-height: 1.45; }
+    .koku-home-product__details span { color: #62635e; font-size: .73rem; font-variant-numeric: tabular-nums; }
+    .koku-home-empty { margin-top: 4rem; border-block: 1px solid #d2cfc7; padding: 4rem 0; }
+    .koku-home-empty p { margin-bottom: 2rem; font-family: 'Noto Serif JP', ui-serif, serif; font-size: 2rem; }
+    .koku-home-story { display: grid; grid-template-columns: 1.15fr .85fr; min-height: 48rem; background: #1a211d; color: #f5f1e8; }
+    .koku-home-story__image { position: relative; min-height: 38rem; overflow: hidden; }
+    .koku-home-story__image img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.75); }
+    .koku-home-story__image span { position: absolute; bottom: 2rem; left: 2rem; color: rgba(255,255,255,.72); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); }
+    .koku-home-story__copy { display: flex; flex-direction: column; justify-content: center; padding: 6rem clamp(2.5rem, 7vw, 8rem); }
+    .koku-home-story__copy .koku-home-label { color: #b9a483; }
+    .koku-home-story__copy h2 { margin-top: 1.2rem; font-family: 'Noto Serif JP', ui-serif, serif; font-size: clamp(2.8rem, 5vw, 5rem); font-weight: 500; letter-spacing: -.065em; line-height: 1; }
+    .koku-home-story__copy > p:not(.koku-home-label) { max-width: 31rem; margin-top: 2rem; color: rgba(255,255,255,.6); font-size: .86rem; line-height: 1.9; }
+    .koku-home-story dl { max-width: 30rem; margin: 3rem 0; border-top: 1px solid rgba(255,255,255,.2); }
+    .koku-home-story dl div { display: grid; grid-template-columns: 3.5rem 1fr; padding: .9rem 0; border-bottom: 1px solid rgba(255,255,255,.2); font-size: .72rem; }
+    .koku-home-story dt { color: #b9a483; font-size: .6rem; letter-spacing: .1em; }
+    .koku-home-story .koku-home-text-link:hover { color: #d9c6a6; }
+    .koku-home-letter { display: grid; grid-template-columns: .8fr .7fr 1.15fr; align-items: end; gap: 4rem; padding-top: 6.5rem; padding-bottom: 7rem; }
+    .koku-home-letter h2 { margin-top: .8rem; font-family: 'Noto Serif JP', ui-serif, serif; font-size: clamp(2.3rem, 4vw, 4rem); letter-spacing: -.055em; }
+    .koku-home-letter > p { max-width: 23rem; color: #6f7069; font-size: .8rem; line-height: 1.8; }
+    .koku-home-letter form label { display: block; margin-bottom: .65rem; color: #71726b; font-size: .6rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+    .koku-home-letter form > div { display: flex; border-bottom: 1px solid #333630; }
+    .koku-home-letter input { min-width: 0; flex: 1; border: 0; background: transparent; padding: .9rem 0; font-size: .8rem; box-shadow: none; }
+    .koku-home-letter input:focus { outline: 0; box-shadow: none; }
+    .koku-home-letter button { padding-left: 1rem; font-size: .625rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+
+    @media (max-width: 1023px) {
+        .koku-home-hero__note { display: none; }
+        .koku-home-departments, .koku-home-new { padding-block: 6.5rem; }
+        .koku-home-product { grid-column: span 6; }
+        .koku-home-product:nth-child(even) { margin-top: 3rem; }
+        .koku-home-story { grid-template-columns: 1fr; }
+        .koku-home-story__image { max-height: 42rem; }
+        .koku-home-letter { grid-template-columns: 1fr 1fr; }
+        .koku-home-letter form { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 639px) {
+        .koku-home-hero, .koku-home-hero__content { min-height: 48rem; }
+        .koku-home-hero__image { object-position: 62% center; }
+        .koku-home-hero__shade { background: linear-gradient(0deg, rgba(8,13,10,.92) 0%, rgba(8,13,10,.5) 68%, rgba(8,13,10,.18) 100%); }
+        .koku-home-hero__content { padding-top: 8rem; padding-bottom: 3.25rem; }
+        .koku-home-hero h1 { font-size: clamp(3.1rem, 15vw, 4.5rem); }
+        .koku-home-hero__intro { max-width: 22rem; font-size: .85rem; }
+        .koku-home-button { width: 100%; }
+        .koku-home-assurance .koku-shell { display: flex; overflow-x: auto; }
+        .koku-home-assurance p { min-width: 16rem; text-align: left; }
+        .koku-home-section-head, .koku-home-section-head--products { grid-template-columns: 1fr; gap: 1.6rem; }
+        .koku-home-departments, .koku-home-new { padding-block: 5rem; }
+        .koku-home-department-list, .koku-home-products { margin-top: 3rem; }
+        .koku-home-department { grid-template-columns: 2rem 1fr auto; gap: .75rem; padding: 1.5rem 0; }
+        .koku-home-department p { display: none; }
+        .koku-home-department:hover { padding-inline: .5rem; }
+        .koku-home-products { gap: 3rem .75rem; }
+        .koku-home-product:nth-child(even) { margin-top: 2rem; }
+        .koku-home-product__details > div { display: block; }
+        .koku-home-product__details h3 { font-size: .9rem; }
+        .koku-home-product__details span { display: block; margin-top: .35rem; }
+        .koku-home-story { min-height: 0; }
+        .koku-home-story__image { min-height: 28rem; }
+        .koku-home-story__copy { padding: 4.5rem 1.5rem 5rem; }
+        .koku-home-letter { grid-template-columns: 1fr; gap: 1.5rem; padding-block: 5rem; }
+        .koku-home-letter form { grid-column: auto; margin-top: 1rem; }
+    }
+}

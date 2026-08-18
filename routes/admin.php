@@ -13,6 +13,8 @@ use App\Livewire\Admin\Products\Form as ProductForm;
 use App\Livewire\Admin\Products\Index as ProductIndex;
 use App\Livewire\Admin\Profile as AdminProfile;
 use App\Livewire\Admin\Reports\Index as ReportIndex;
+use App\Livewire\Admin\Reviews\Index as ReviewIndex;
+use App\Livewire\Admin\Community\Index as CommunityAdminIndex;
 use App\Livewire\Admin\Settings\Index as SettingIndex;
 use App\Livewire\Admin\Shipping\Index as ShippingIndex;
 use Illuminate\Support\Facades\Route;
@@ -42,5 +44,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('shipping', ShippingIndex::class)->name('shipping.index');
     Route::get('customers', CustomerIndex::class)->name('customers.index');
     Route::get('reports', ReportIndex::class)->name('reports.index');
+    Route::get('reviews', ReviewIndex::class)->name('reviews.index');
+    Route::get('community', CommunityAdminIndex::class)->name('community.index');
     Route::get('settings', SettingIndex::class)->name('settings.index');
 });
