@@ -1,6 +1,6 @@
-<div class="mx-auto w-full max-w-[1500px] space-y-5" x-data>
-    <header class="flex flex-col gap-4 rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-4 shadow-admin-panel sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div class="flex min-w-0 items-center gap-3">
+<div class="admin-record-editor" x-data>
+    <header class="admin-editor-topbar">
+        <div class="admin-editor-identity">
             <a href="{{ route('admin.coupons.index') }}"
                 class="btn btn-square btn-sm shrink-0 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] shadow-admin-control hover:bg-[var(--admin-surface-soft)]"
                 aria-label="Back to coupons">
@@ -11,17 +11,17 @@
             </a>
 
             <div class="min-w-0">
-                <p class="text-[10px] font-medium uppercase tracking-[0.12em] text-base-content/40">Sales · Coupons</p>
-                <h1 class="mt-0.5 truncate text-lg font-semibold tracking-tight sm:text-xl">
+                <p class="admin-editor-breadcrumb">Sales / Coupons</p>
+                <h1>
                     {{ $coupon ? 'Edit coupon' : 'New coupon' }}
                 </h1>
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-2">
-            <a href="{{ route('admin.coupons.index') }}" class="btn btn-ghost btn-sm h-10 min-h-10 rounded-xl px-4">Cancel</a>
+        <div class="admin-editor-actions">
+            <a href="{{ route('admin.coupons.index') }}" class="admin-editor-cancel">Cancel</a>
             <button type="submit" form="coupon-form" wire:loading.attr="disabled" wire:target="save"
-                class="btn btn-primary btn-sm h-10 min-h-10 min-w-32 rounded-xl px-5 shadow-[0_10px_24px_rgba(255,122,0,.2)]">
+                class="admin-editor-save">
                 <span wire:loading wire:target="save" class="loading loading-spinner loading-xs"></span>
                 <span wire:loading.remove wire:target="save">{{ $coupon ? 'Save changes' : 'Create coupon' }}</span>
                 <span wire:loading wire:target="save">Saving...</span>
@@ -29,9 +29,8 @@
         </div>
     </header>
 
-    <form id="coupon-form" wire:submit="save"
-        class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div class="space-y-5">
+    <form id="coupon-form" wire:submit="save" class="admin-editor-canvas admin-editor-layout">
+        <div class="admin-editor-stack">
             <x-admin.form-section title="Coupon details" description="Customer-facing promotion identity">
                 <x-slot:icon>
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -95,7 +94,7 @@
             </x-admin.form-section>
         </div>
 
-        <aside class="space-y-5 lg:sticky lg:top-20">
+        <aside class="admin-editor-rail">
             <x-admin.form-section title="Availability" description="Promotion window">
                 <div class="space-y-4">
                     <x-admin.form-field label="Start date" name="start_date" required>
@@ -123,7 +122,7 @@
                 </div>
             </x-admin.form-section>
 
-            <section class="relative overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-admin-panel">
+            <section class="admin-editor-preview relative overflow-hidden border border-[var(--admin-border)] bg-[var(--admin-surface)]">
                 <span class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></span>
                 <div class="border-b border-dashed border-[var(--admin-border)] bg-[var(--admin-surface-raised)] px-5 py-5">
                     <div class="flex items-start justify-between gap-4">

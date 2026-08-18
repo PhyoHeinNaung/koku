@@ -3,11 +3,11 @@
     'description' => null,
 ])
 
-<label {{ $attributes->class('flex cursor-pointer items-center justify-between gap-5 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-sunken)] px-4 py-3.5 shadow-inner transition hover:border-[var(--admin-border-strong)]') }}>
+<label {{ $attributes->class('flex cursor-pointer items-center justify-between gap-5 border-b border-[var(--admin-border)] bg-white px-1 py-4 transition hover:bg-[#faf9f7]') }}>
     <span class="min-w-0">
-        <strong class="block text-[11px] font-semibold">{{ $label }}</strong>
+        <strong class="block text-[13px] font-semibold">{{ $label }}</strong>
         @if ($description)
-            <small class="mt-0.5 block text-[11px] text-base-content/45">{{ $description }}</small>
+            <small class="mt-1 block text-xs text-base-content/50">{{ $description }}</small>
         @endif
     </span>
 

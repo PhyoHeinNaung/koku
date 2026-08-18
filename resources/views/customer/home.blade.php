@@ -1,84 +1,78 @@
-<x-app-layout>
+<x-app-layout :overlay="true">
     @php
-        $heroImage = 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1800&q=88';
-        $editorialImage = 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1500&q=85';
-        $productImages = [
-            'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=82',
-            'https://images.unsplash.com/photo-1548171915-e79a380a2a4b?auto=format&fit=crop&w=900&q=82',
-            'https://images.unsplash.com/photo-1526045431048-f857369baa09?auto=format&fit=crop&w=900&q=82',
-            'https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=900&q=82',
+        $fallbackImages = [
+            'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=86',
+            'https://images.unsplash.com/photo-1548171915-e79a380a2a4b?auto=format&fit=crop&w=1000&q=86',
+            'https://images.unsplash.com/photo-1526045431048-f857369baa09?auto=format&fit=crop&w=1000&q=86',
+            'https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1000&q=86',
         ];
-        $collections = [
-            ['Automatic', 'Watches powered by movement, made for a lifetime.', route('shop.index', ['movements' => ['automatic']]), 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=82'],
-            ['Everyday', 'Understated pieces that belong in your daily rhythm.', route('shop.index'), 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=82'],
-            ['For everyone', 'Clear design, considered without convention.', route('shop.index', ['genders' => ['unisex']]), 'https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=1000&q=82'],
+        $departments = [
+            ['01', 'Automatic', 'Self-winding movements with a mechanical pulse.', route('shop.index', ['movements' => ['automatic']])],
+            ['02', 'Quartz', 'Precise, dependable watches made for every day.', route('shop.index', ['movements' => ['quartz']])],
+            ['03', 'Men', 'From restrained dress watches to robust daily pieces.', route('shop.index', ['genders' => ['men']])],
+            ['04', 'Women', 'Considered proportions, enduring materials.', route('shop.index', ['genders' => ['women']])],
         ];
     @endphp
 
-    <div class="home-page bg-[#f7f6f2]">
-        <section class="relative min-h-[calc(100svh-4.5rem)] overflow-hidden bg-[#17202b] text-white">
-            <img src="{{ $heroImage }}" alt="A classic wristwatch in warm natural light" class="absolute inset-0 h-full w-full object-cover object-center" fetchpriority="high">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 to-transparent"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10"></div>
-            <div class="koku-shell relative flex min-h-[calc(100svh-4.5rem)] items-end pb-14 pt-28 sm:pb-20 lg:items-center lg:pb-24">
-                <div class="max-w-xl">
-                    <p class="home-kicker text-white/70">The art of keeping time</p>
-                    <h1 class="mt-5 font-serif text-[clamp(3.25rem,7.2vw,7rem)] font-medium leading-[.91] tracking-[-.065em]">Time, well<br>chosen.</h1>
-                    <p class="mt-7 max-w-md text-sm leading-7 text-white/72 sm:text-base">A considered collection of watches selected for enduring design, honest craft and everyday pleasure.</p>
-                    <div class="mt-9 flex flex-wrap items-center gap-5">
-                        <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-8 bg-white px-6 py-4 text-[11px] font-semibold uppercase tracking-[.14em] text-[#18212c] transition hover:bg-[#e8e4dc]">Shop the collection <span aria-hidden="true">&rarr;</span></a>
-                        <a href="#new-arrivals" class="text-[11px] font-medium uppercase tracking-[.14em] text-white underline decoration-white/45 underline-offset-8 transition hover:decoration-white">See what is new</a>
-                    </div>
+    <div class="koku-home">
+        <section class="koku-home-hero" aria-labelledby="home-heading">
+            <img src="{{ asset('images/hero.jpg') }}" alt="A considered selection of mechanical watches at the Koku counter" class="koku-home-hero__image" fetchpriority="high">
+            <div class="koku-home-hero__shade"></div>
+            <div class="koku-home-hero__content koku-shell">
+                <div class="koku-home-hero__copy">
+                    <p class="koku-home-label">Independent watch curators · Est. 2024</p>
+                    <h1 id="home-heading">A watch should<br><em>feel like yours.</em></h1>
+                    <p class="koku-home-hero__intro">Original watches from makers we trust, selected for their design, build and staying power.</p>
+                    <a href="{{ route('shop.index') }}" class="koku-home-button">Shop all watches <span aria-hidden="true">↗</span></a>
                 </div>
+                <div class="koku-home-hero__note" aria-label="Koku service promise"><span>01 / 03</span><p>Every watch is inspected before it reaches your wrist.</p></div>
             </div>
-            <div class="absolute bottom-7 right-8 hidden items-center gap-3 text-[10px] uppercase tracking-[.18em] text-white/55 lg:flex"><span class="block h-px w-10 bg-white/40"></span> Scroll to explore</div>
         </section>
 
-        <section class="koku-shell py-20 sm:py-28 lg:py-36">
-            <div class="grid gap-10 border-b border-[#d8d4cb] pb-14 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-                <div><p class="home-kicker text-[#6d685f]">Curated by Koku</p><h2 class="mt-4 max-w-md font-serif text-4xl leading-[1.08] tracking-[-.05em] sm:text-5xl">Find your rhythm.</h2></div>
-                <p class="max-w-xl text-sm leading-7 text-[#716d65] lg:justify-self-end">Not every watch needs to shout. We look for balance, proportion and a sense of purpose — pieces that feel as relevant years from now as they do today.</p>
-            </div>
-            <div class="mt-8 grid gap-4 md:grid-cols-3">
-                @foreach ($collections as [$title, $copy, $href, $image])
-                    <a href="{{ $href }}" class="group block">
-                        <div class="aspect-[4/5] overflow-hidden bg-[#e3e0d8]"><img src="{{ $image }}" alt="{{ $title }} watch collection" loading="lazy" class="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]"></div>
-                        <div class="flex items-start justify-between gap-5 pt-5"><div><h3 class="font-serif text-xl tracking-[-.03em]">{{ $title }}</h3><p class="mt-2 max-w-[17rem] text-xs leading-5 text-[#777269]">{{ $copy }}</p></div><span class="mt-1 text-lg transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span></div>
-                    </a>
+        <aside class="koku-home-assurance" aria-label="Shopping benefits"><div class="koku-shell">
+            <p><span>Complimentary delivery</span> on qualifying orders</p><p><span>30-day returns</span> for a change of mind</p><p><span>Authenticity guaranteed</span> on every watch</p>
+        </div></aside>
+
+        <section class="koku-home-departments koku-shell" aria-labelledby="departments-heading">
+            <header class="koku-home-section-head"><div><p class="koku-home-label">Shop by collection</p><h2 id="departments-heading">Begin with what matters.</h2></div><p>Movement, proportion, purpose. Four useful ways into a collection built to be worn—not merely admired.</p></header>
+            <div class="koku-home-department-list">
+                @foreach ($departments as [$number, $title, $copy, $href])
+                    <a href="{{ $href }}" class="koku-home-department"><span class="koku-home-department__number">{{ $number }}</span><h3>{{ $title }}</h3><p>{{ $copy }}</p><span class="koku-home-department__arrow" aria-hidden="true">↗</span></a>
                 @endforeach
             </div>
         </section>
 
-        <section id="new-arrivals" class="bg-white py-20 sm:py-28">
-            <div class="koku-shell">
-                <div class="flex items-end justify-between gap-8"><div><p class="home-kicker text-[#6d685f]">New and noteworthy</p><h2 class="mt-4 font-serif text-4xl tracking-[-.05em] sm:text-5xl">The latest edit.</h2></div><a href="{{ route('shop.index') }}" class="koku-link hidden sm:inline-flex">View all watches <span>&rarr;</span></a></div>
-                @if ($featuredProducts->isNotEmpty())
-                    <div class="mt-11 grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
-                        @foreach ($featuredProducts as $product)
-                            @php($variant = $product->defaultVariant())
-                            <a href="{{ route('shop.product', $product) }}" class="group block">
-                                <div class="aspect-[4/5] overflow-hidden bg-[#f0eee9]"><img src="{{ $productImages[$loop->index % count($productImages)] }}" alt="{{ $product->name }}" loading="lazy" class="koku-product-image h-full w-full object-cover"></div>
-                                <div class="pt-4"><p class="text-[10px] font-medium uppercase tracking-[.15em] text-[#8a857c]">{{ $product->brand?->name ?? 'Koku selection' }}</p><div class="mt-2 flex items-start justify-between gap-3"><h3 class="font-serif text-base tracking-[-.02em] sm:text-lg">{{ $product->name }}</h3>@if($variant)<span class="shrink-0 text-xs text-[#716d65]">${{ number_format((float) $variant->price, 0) }}</span>@endif</div></div>
+        <section class="koku-home-new" id="new-arrivals" aria-labelledby="new-heading"><div class="koku-shell">
+            <header class="koku-home-section-head koku-home-section-head--products"><div><p class="koku-home-label">Fresh from the cabinet</p><h2 id="new-heading">New arrivals</h2></div><a href="{{ route('shop.index') }}" class="koku-home-text-link">See the full collection <span aria-hidden="true">→</span></a></header>
+            @if ($featuredProducts->isNotEmpty())
+                <div class="koku-home-products">
+                    @foreach ($featuredProducts as $product)
+                        @php
+                            $variant = $product->defaultVariant();
+                            $image = $product->primary_image_url ?: $fallbackImages[$loop->index % count($fallbackImages)];
+                        @endphp
+                        <article class="koku-home-product">
+                            <a href="{{ route('shop.product', $product) }}" class="koku-home-product__media">
+                                @if ($product->is_featured)<span class="koku-home-product__flag">Koku pick</span>@endif
+                                <img src="{{ $image }}" alt="{{ $product->name }} by {{ $product->brand?->name ?? 'Koku' }}" loading="lazy"><span class="koku-home-product__view">View watch <span aria-hidden="true">↗</span></span>
                             </a>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="mt-10 border border-[#ddd9d1] px-6 py-16 text-center"><p class="font-serif text-2xl">A new edit is on its way.</p><a href="{{ route('shop.index') }}" class="koku-link mt-6">Explore all watches <span>&rarr;</span></a></div>
-                @endif
-                <a href="{{ route('shop.index') }}" class="koku-link mt-10 sm:hidden">View all watches <span>&rarr;</span></a>
-            </div>
+                            <div class="koku-home-product__details"><p>{{ $product->brand?->name ?? 'Koku selection' }}</p><div><h3><a href="{{ route('shop.product', $product) }}">{{ $product->name }}</a></h3>@if ($variant)<span>${{ number_format((float) $variant->price, 0) }}</span>@endif</div></div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <div class="koku-home-empty"><p>The cabinet is being refreshed.</p><a href="{{ route('shop.index') }}" class="koku-home-text-link">Browse every watch <span aria-hidden="true">→</span></a></div>
+            @endif
+        </div></section>
+
+        <section class="koku-home-story" aria-labelledby="story-heading">
+            <div class="koku-home-story__image"><img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1600&q=88" alt="Close detail of a classic wristwatch" loading="lazy"><span>Details matter</span></div>
+            <div class="koku-home-story__copy"><p class="koku-home-label">The Koku standard</p><h2 id="story-heading">Chosen slowly.<br>Worn often.</h2><p>We look past novelty. Each piece earns its place through legibility, honest materials and a design that will still make sense years from now.</p><dl><div><dt>01</dt><dd>Authorised sourcing</dd></div><div><dt>02</dt><dd>Pre-dispatch inspection</dd></div><div><dt>03</dt><dd>Care beyond purchase</dd></div></dl><a href="{{ route('about') }}" class="koku-home-text-link">How we choose <span aria-hidden="true">→</span></a></div>
         </section>
 
-        <section class="grid bg-[#1a2735] text-white lg:grid-cols-2">
-            <div class="min-h-[30rem] lg:min-h-[42rem]"><img src="{{ $editorialImage }}" alt="A refined watch detail" loading="lazy" class="h-full w-full object-cover"></div>
-            <div class="flex items-center px-7 py-20 sm:px-14 lg:px-[clamp(4rem,8vw,8rem)]">
-                <div class="max-w-lg"><p class="home-kicker text-white/55">Our philosophy</p><h2 class="mt-5 font-serif text-4xl leading-[1.08] tracking-[-.05em] sm:text-5xl">Fewer things.<br>Better chosen.</h2><p class="mt-7 max-w-md text-sm leading-7 text-white/62">We believe a watch should earn its place on your wrist. Our edit favours legibility, material honesty and design with the confidence to remain quiet.</p><a href="{{ route('about') }}" class="mt-9 inline-flex items-center gap-5 border-b border-white/50 pb-2 text-[11px] font-medium uppercase tracking-[.14em] transition hover:border-white">Read our story <span>&rarr;</span></a></div>
-            </div>
-        </section>
-
-        <section class="koku-shell grid gap-10 py-20 sm:py-28 lg:grid-cols-[1fr_1.05fr] lg:items-end">
-            <div><p class="home-kicker text-[#6d685f]">The Koku letter</p><h2 class="mt-4 font-serif text-4xl tracking-[-.05em]">Time, delivered slowly.</h2><p class="mt-4 max-w-md text-sm leading-7 text-[#716d65]">New arrivals, thoughtful stories and practical watch guidance. Occasionally, and always worth opening.</p></div>
-            <form class="flex border-b border-[#272924]" onsubmit="event.preventDefault()"><label for="home-email" class="sr-only">Email address</label><input id="home-email" type="email" required placeholder="Your email address" class="min-w-0 flex-1 border-0 bg-transparent px-0 py-4 text-sm shadow-none placeholder:text-[#918d84] focus:ring-0"><button class="px-3 text-[10px] font-semibold uppercase tracking-[.14em]">Subscribe &rarr;</button></form>
+        <section class="koku-home-letter koku-shell" aria-labelledby="letter-heading">
+            <div><p class="koku-home-label">Notes on good time</p><h2 id="letter-heading">The Koku letter</h2></div><p>New watches, useful care advice and stories from people who wear them.</p>
+            <form onsubmit="event.preventDefault()"><label for="home-email">Email address</label><div><input id="home-email" type="email" required autocomplete="email" placeholder="you@example.com"><button type="submit">Subscribe <span aria-hidden="true">→</span></button></div></form>
         </section>
     </div>
 </x-app-layout>

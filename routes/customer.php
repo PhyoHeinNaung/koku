@@ -15,6 +15,7 @@ use App\Livewire\Customer\Community\Index as CommunityIndex;
 use App\Livewire\Customer\Community\Show as CommunityShow;
 use App\Livewire\Customer\Community\Create as CommunityCreate;
 use App\Models\Product;
+use App\Models\ShippingZone;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,6 +34,18 @@ Route::get('/', function () {
 Route::view('/about', 'customer.about')->name('about');
 Route::view('/contact', 'customer.contact')->name('contact');
 Route::view('/faqs', 'customer.faqs')->name('faqs');
+Route::get('/shipping-and-returns', function () {
+    $shippingZones = ShippingZone::query()
+        ->with(['locations' => fn ($query) => $query->where('is_active', true)->orderBy('city')])
+        ->where('is_active', true)
+        ->orderBy('fee')
+        ->get();
+
+    return view('customer.shipping-returns', compact('shippingZones'));
+})->name('shipping-returns');
+Route::view('/watch-care-and-warranty', 'customer.watch-care')->name('watch-care');
+Route::view('/privacy', 'customer.privacy')->name('privacy');
+Route::view('/terms', 'customer.terms')->name('terms');
 
 Route::get('/shop', ShopIndex::class)->name('shop.index');
 Route::get('/products/{product:slug}', ShopShow::class)->name('shop.product');

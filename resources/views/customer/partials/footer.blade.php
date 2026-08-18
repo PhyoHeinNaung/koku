@@ -26,7 +26,8 @@
                 <div>
                     <p class="koku-eyebrow mb-5 text-white/55">Service</p>
                     <ul class="space-y-3">
-                        <li><a href="{{ route('faqs') }}#shipping">Shipping & returns</a></li>
+                        <li><a href="{{ route('shipping-returns') }}">Shipping & returns</a></li>
+                        <li><a href="{{ route('watch-care') }}">Watch care & warranty</a></li>
                         <li><a href="{{ route('faqs') }}">FAQs</a></li>
                         <li><a href="{{ auth()->check() ? route('profile.edit') : route('login') }}">My account</a></li>
                     </ul>
@@ -35,7 +36,7 @@
         </div>
         <div class="flex flex-col gap-5 pt-8 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
             <p>© {{ date('Y') }} Koku. Time, considered.</p>
-            <div class="flex gap-6"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Instagram</a></div>
+            <div class="flex gap-6"><a href="{{ route('privacy') }}">Privacy</a><a href="{{ route('terms') }}">Terms</a><a href="https://www.instagram.com/" rel="noopener noreferrer" target="_blank">Instagram</a></div>
         </div>
     </div>
 </footer>

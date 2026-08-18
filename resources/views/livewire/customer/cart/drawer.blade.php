@@ -29,7 +29,8 @@
                     <div class="aspect-square overflow-hidden bg-[#f5f5f5]">
                         @if ($item->variant->images->first())<img
                             src="{{ Storage::url($item->variant->images->first()->image_url) }}"
-                        alt="{{ $item->variant->product->name }}" class="h-full w-full object-contain p-2">@endif</div>
+                        alt="{{ $item->variant->product->name }}" class="h-full w-full object-contain p-2">@endif
+                    </div>
                     <div class="min-w-0">
                         <div class="flex justify-between gap-3">
                             <div class="min-w-0">
@@ -48,8 +49,7 @@
                     </div>
                 </article>
             @empty
-                <div class="flex h-full min-h-80 flex-col items-center justify-center text-center"><span
-                        class="font-serif text-4xl text-[var(--koku-indigo)]">空</span>
+                <div class="flex h-full min-h-80 flex-col items-center justify-center text-center">
                     <p class="mt-5 font-serif text-xl">Your cart is empty.</p><a href="{{ route('shop.index') }}"
                         @click="open=false" class="koku-link mt-7">Explore watches <span>→</span></a>
                 </div>
@@ -61,8 +61,11 @@
                         class="font-serif text-2xl">${{ number_format($subtotal, 2) }}</span></div>
                 <p class="mt-2 text-[10px] text-[var(--koku-muted)]">Taxes included. Delivery calculated at checkout.</p>
                 <div class="mt-6 grid grid-cols-2 gap-3">
-                    <a href="{{ route('cart.index') }}" @click="open=false" class="flex min-h-12 items-center justify-center border border-[var(--koku-indigo)] px-4 text-center text-xs uppercase tracking-[0.12em] text-[var(--koku-indigo)]">View cart</a>
-                    <a href="{{ route('checkout.index') }}" class="flex min-h-12 items-center justify-center bg-[var(--koku-indigo)] px-4 text-center text-xs uppercase tracking-[0.12em] text-white">Checkout</a>
+                    <a href="{{ route('cart.index') }}" @click="open=false"
+                        class="flex min-h-12 items-center justify-center border border-[var(--koku-indigo)] px-4 text-center text-xs uppercase tracking-[0.12em] text-[var(--koku-indigo)]">View
+                        cart</a>
+                    <a href="{{ route('checkout.index') }}"
+                        class="flex min-h-12 items-center justify-center bg-[var(--koku-indigo)] px-4 text-center text-xs uppercase tracking-[0.12em] text-white">Checkout</a>
                 </div>
         </div>@endif
     </aside>

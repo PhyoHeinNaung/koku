@@ -4,7 +4,6 @@
     $megaMenus = [
         'shop' => [
             'label' => 'Watches',
-            'intro' => 'A considered edit for every rhythm of life.',
             'columns' => [
                 ['title' => 'Collection', 'links' => [["Men's watches", route('shop.index', ['genders' => ['men']])], ["Women's watches", route('shop.index', ['genders' => ['women']])], ['Unisex', route('shop.index', ['genders' => ['unisex']])], ['View all', route('shop.index')]]],
                 ['title' => 'Style', 'links' => [['Casual & everyday', route('shop.index')], ['Dress & formal', route('shop.index')], ['Sport & dive', route('shop.index')], ['Minimal', route('shop.index')]]],
@@ -13,17 +12,20 @@
         ],
         'brands' => [
             'label' => 'Brands',
-            'intro' => 'Established houses and modern makers, selected by Koku.',
-            'columns' => [
-                ['title' => 'Japanese', 'links' => [['Seiko', route('shop.index')], ['Citizen', route('shop.index')], ['Casio / G-Shock', route('shop.index')], ['Orient', route('shop.index')]]],
-                ['title' => 'Swiss', 'links' => [['Longines', route('shop.index')], ['Tissot', route('shop.index')], ['Hamilton', route('shop.index')], ['View all brands', route('shop.index')]]],
-            ],
+            'columns' => $featuredBrands->chunk(4)->map(fn ($brands, $index) => [
+                'title' => $index === 0 ? 'Featured brands' : 'More featured',
+                'links' => $brands->map(fn ($brand) => [$brand->name, route('shop.index', ['brands' => [$brand->slug]])])->all(),
+            ])->push([
+                'title' => 'All makers',
+                'links' => [['View all brands', route('shop.index')]],
+            ])->all(),
         ],
         'journal' => [
-            'label' => 'Koku',
-            'intro' => 'A thoughtful place for watches, guidance and lasting service.',
+            'label' => 'About',
             'columns' => [
-                ['title' => 'Discover', 'links' => [['Our story', route('about')], ['Frequently asked questions', route('faqs')], ['Visit & contact', route('contact')], ['Wrist Stories', route('community.index')]]],
+                ['title' => 'Koku', 'links' => [['Our story', route('about')], ['Visit & contact', route('contact')]]],
+                ['title' => 'Guidance', 'links' => [['Shipping & returns', route('shipping-returns')], ['Watch care & warranty', route('watch-care')], ['Frequently asked questions', route('faqs')]]],
+                ['title' => 'Community', 'links' => [['Wrist Stories', route('community.index')], ['Share your story', route('community.create')]]],
             ],
         ],
     ];
@@ -48,7 +50,6 @@
                         {{ $menu['label'] }}
                     </button>
                 @endforeach
-                <a href="{{ route('shop.index') }}" class="koku-eyebrow">New arrivals</a>
                 <a href="{{ route('community.index') }}" class="koku-eyebrow">Community</a>
             </div>
 
@@ -155,7 +156,8 @@
                                         stroke-width="1.5">
                                         <rect x="5" y="10" width="14" height="10" rx="2" />
                                         <path d="M8 10V7a4 4 0 018 0v3" />
-                                    </svg> Secure, private access</div>
+                                    </svg> Secure, private access
+                                </div>
                             </div>
                         @endauth
                     </div>
@@ -168,26 +170,19 @@
 
     <div x-show="activeMenu" x-transition.opacity x-cloak @mouseenter="hovered = true"
         class="absolute inset-x-0 top-full border-b border-[var(--koku-line)] bg-[var(--koku-white)] text-[var(--koku-ink)] shadow-[0_18px_35px_rgba(25,26,24,0.08)]">
-        <div class="koku-shell py-10">
+        <div class="koku-shell">
             @foreach ($megaMenus as $key => $menu)
-                <div x-show="activeMenu === '{{ $key }}'" class="grid grid-cols-[minmax(13rem,1fr)_3fr] gap-16">
-                    <div>
-                        <p class="font-serif text-2xl leading-snug">{{ $menu['intro'] }}</p>
-                        <span class="mt-7 block h-px w-12 bg-[var(--koku-indigo)]"></span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-10">
+                <div x-show="activeMenu === '{{ $key }}'" x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="translate-y-2 opacity-0" x-transition:enter-end="translate-y-0 opacity-100" class="grid h-[19rem] grid-cols-3 content-start gap-x-20 py-10">
                         @foreach ($menu['columns'] as $column)
                             <div>
-                                <p class="koku-eyebrow mb-5 text-[var(--koku-muted)]">{{ $column['title'] }}</p>
-                                <ul class="space-y-3 text-sm">
+                                <div class="mb-6 flex items-center gap-4"><p class="koku-eyebrow text-[var(--koku-muted)]">{{ $column['title'] }}</p><span class="h-px flex-1 bg-[var(--koku-line)]"></span></div>
+                                <ul class="space-y-3.5 text-[15px]">
                                     @foreach ($column['links'] as [$label, $href])
-                                        <li><a href="{{ $href }}"
-                                                class="transition-colors hover:text-[var(--koku-indigo)]">{{ $label }}</a></li>
+                                        <li><a href="{{ $href }}" class="group/link inline-flex items-center gap-2 transition-colors hover:text-[var(--koku-indigo)]"><span>{{ $label }}</span><span class="-translate-x-1 opacity-0 transition group-hover/link:translate-x-0 group-hover/link:opacity-100">→</span></a></li>
                                     @endforeach
                                 </ul>
                             </div>
                         @endforeach
-                    </div>
                 </div>
             @endforeach
         </div>
@@ -215,7 +210,8 @@
                 </svg><input autofocus type="search" name="search" placeholder="Search watches…"
                     class="min-w-0 flex-1 border-0 bg-transparent px-3 py-4 text-sm shadow-none placeholder:text-[var(--koku-muted)]/60 focus:ring-0"><button
                     class="rounded-xl bg-[var(--koku-indigo)] px-4 py-2.5 text-xs font-medium text-white"
-                    aria-label="Submit search">Search</button></form>
+                    aria-label="Submit search">Search</button>
+            </form>
             <div class="mt-4 flex flex-wrap gap-2"><span
                     class="text-[10px] uppercase tracking-[.12em] text-[var(--koku-muted)]">Popular</span><a
                     href="{{ route('shop.index', ['movements' => ['automatic']]) }}"

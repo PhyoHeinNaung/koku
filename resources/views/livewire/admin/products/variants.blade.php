@@ -279,7 +279,7 @@
 
                         <main class="min-h-0 overflow-y-auto bg-[var(--admin-canvas)] p-4 sm:p-6">
                             @if ($editorOpen)
-                                <article x-data="{ editorTab: 'details' }" class="mx-auto max-w-5xl">
+                                <article class="mx-auto max-w-5xl">
                                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                         <h4 class="text-lg font-semibold">
                                             {{ $editingId ? ($name ?: 'Untitled variant') : 'Create a variant' }}
@@ -298,40 +298,9 @@
                                         @endif
                                     </div>
 
-                                    <div
-                                        class="mt-4 overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-sunken)] p-1.5 shadow-inner [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                                        role="tablist" aria-label="Variant editor sections">
-                                        <div class="flex min-w-max gap-1">
-                                        <button type="button" role="tab" @click="editorTab = 'details'"
-                                            :aria-selected="(editorTab === 'details').toString()"
-                                            class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg border px-4 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                                            :class="editorTab === 'details' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:text-base-content'">
-                                            Details
-                                        </button>
-                                        <button type="button" role="tab" @click="editorTab = 'specifications'"
-                                            :aria-selected="(editorTab === 'specifications').toString()"
-                                            class="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg border px-4 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                                            :class="editorTab === 'specifications' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:text-base-content'">
-                                            Specifications
-                                            @php($overrideCount = collect($overriddenSpecs)->filter()->count() + count($customSpecOverrides))
-                                            @if ($overrideCount)
-                                                <span class="badge badge-primary badge-xs">{{ $overrideCount }}</span>
-                                            @endif
-                                        </button>
-                                        <button type="button" role="tab" @click="editorTab = 'media'"
-                                            :aria-selected="(editorTab === 'media').toString()"
-                                            class="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg border px-4 text-[11px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                                            :class="editorTab === 'media' ? 'border-[var(--admin-border-strong)] bg-[var(--admin-surface-raised)] text-base-content shadow-admin-control' : 'border-transparent text-base-content/45 hover:text-base-content'">
-                                            Media
-                                            @if ($editingVariant)
-                                                <span class="badge badge-ghost badge-xs">{{ $editingVariant->images->count() }}</span>
-                                            @endif
-                                        </button>
-                                        </div>
-                                    </div>
+                                    <p class="mt-1 text-xs leading-5 text-base-content/45">Set pricing and inventory first, then review inherited specifications and media below.</p>
 
-                                    <div x-show="editorTab === 'details'" x-cloak
-                                        class="mt-5 overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-admin-panel">
+                                    <div class="mt-5 overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-admin-panel">
                                         <div class="border-b border-[var(--admin-border)] bg-[var(--admin-surface-raised)] px-5 py-4">
                                             <h5 class="text-sm font-semibold">Identity and inventory</h5>
                                         </div>
@@ -402,7 +371,7 @@
                                         </div>
                                     </div>
 
-                                    <div x-show="editorTab === 'specifications'" x-cloak class="mt-5 space-y-4">
+                                    <div class="mt-5 space-y-4">
                                         @foreach ($specificationGroups as $group => $fields)
                                             <section
                                                 class="overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-admin-panel">
@@ -495,8 +464,7 @@
                                         </section>
                                     </div>
 
-                                    <div x-show="editorTab === 'media'" x-cloak
-                                        class="mt-5 overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 shadow-admin-panel">
+                                    <div class="mt-5 overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 shadow-admin-panel">
                                         @if ($editingVariant)
                                             <livewire:admin.products.variant-images :variant="$editingVariant"
                                                 :key="'workspace-variant-images-' . $editingVariant->id" />

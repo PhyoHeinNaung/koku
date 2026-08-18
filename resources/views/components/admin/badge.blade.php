@@ -12,7 +12,7 @@
 @endphp
 
 <span {{ $attributes->class([
-    'inline-flex h-5 items-center gap-1.5 rounded-md border px-1.5 text-[9px] font-semibold leading-none shadow-[inset_0_1px_0_var(--admin-highlight)]',
+    'inline-flex h-6 items-center gap-1.5 rounded-[3px] border px-2 text-[11px] font-medium leading-none',
     $tones[$tone] ?? $tones['gray'],
 ]) }}>
     <span class="size-1 shrink-0 rounded-full bg-current opacity-75"></span>

@@ -1,1 +1,68 @@
-<div class="space-y-4"><div><p class="text-[10px] font-semibold uppercase tracking-[.16em] text-accent">Community safety</p><h1 class="mt-2 text-2xl font-semibold">Wrist Stories moderation</h1><p class="mt-1 text-xs text-base-content/45">Review posts, reports and conversations.</p></div><div class="flex gap-2">@foreach(['pending'=>'Pending posts','published'=>'Published','comments'=>'Comments','reports'=>'Reports'] as $value=>$label)<button wire:click="$set('tab','{{ $value }}')" class="rounded-xl px-4 py-2 text-xs {{ $tab===$value?'bg-accent text-accent-content':'bg-[var(--admin-surface-raised)] text-base-content/55' }}">{{ $label }}</button>@endforeach</div>@if(session('success'))<div class="rounded-xl bg-success/10 px-4 py-3 text-xs text-success">{{ session('success') }}</div>@endif @if(in_array($tab,['pending','published']))<div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">@forelse($posts as $post)<article class="overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)]">@if($post->media->first())<img src="{{ Storage::url($post->media->first()->file_path) }}" alt="Community submission" class="h-56 w-full object-cover">@endif<div class="p-4"><p class="text-xs font-semibold">{{ $post->user->name }} · {{ $post->product->name }}</p>@if($post->caption)<p class="mt-2 line-clamp-3 text-xs leading-5 text-base-content/55">{{ $post->caption }}</p>@endif<div class="mt-4 flex gap-2">@if($post->status!=='published')<button wire:click="approve({{ $post->id }})" class="btn btn-sm rounded-lg border-0 bg-success text-xs text-success-content">Approve</button>@endif<button wire:click="reject({{ $post->id }})" class="btn btn-sm rounded-lg border-0 bg-error/10 text-xs text-error">Reject</button>@if($post->status==='published')<button wire:click="feature({{ $post->id }})" class="btn btn-sm rounded-lg text-xs">{{ $post->is_featured?'Unfeature':'Feature' }}</button>@endif</div></div></article>@empty<p class="text-sm text-base-content/45">Nothing here.</p>@endforelse</div>@elseif($tab==='comments')<div class="space-y-2">@foreach($comments as $comment)<article class="flex items-start justify-between gap-4 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] p-4"><div><p class="text-xs font-semibold">{{ $comment->user->name }}</p><p class="mt-2 text-xs text-base-content/60">{{ $comment->body }}</p></div><button wire:click="hideComment({{ $comment->id }})" class="text-xs text-error">Hide</button></article>@endforeach</div>@else<div class="space-y-2">@forelse($reports as $report)<article class="flex items-start justify-between gap-4 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] p-4"><div><p class="text-xs font-semibold uppercase text-error">{{ $report->reason }} · {{ $report->reportable_type }} #{{ $report->reportable_id }}</p><p class="mt-2 text-xs text-base-content/55">{{ $report->details ?: 'No additional details.' }}</p><p class="mt-1 text-[9px] text-base-content/35">Reported by {{ $report->reporter->name }}</p></div><button wire:click="resolveReport({{ $report->id }})" class="btn btn-sm rounded-lg text-xs">Resolve</button></article>@empty<p class="text-sm text-base-content/45">No open reports.</p>@endforelse</div>@endif</div>
+@php($tabs = ['posts' => 'Gallery posts', 'comments' => 'Comments', 'reports' => 'Reports'])
+
+<div class="admin-page admin-moderation-page">
+    <main class="admin-moderation-shell">
+        <header class="admin-moderation-head">
+            <div>
+                <p class="admin-moderation-eyebrow">Community safety</p>
+                <h1 class="admin-page-title">Wrist Stories</h1>
+                <p class="admin-moderation-intro">Posts go live immediately. Feature good stories and act on content that breaks community rules.</p>
+            </div>
+            <div class="admin-moderation-total">
+                <strong>{{ $tab === 'posts' ? $posts->count() : ($tab === 'comments' ? $comments->count() : $reports->count()) }}</strong>
+                <span>{{ $tab === 'posts' ? 'recent posts' : ($tab === 'comments' ? 'recent comments' : 'open reports') }}</span>
+            </div>
+        </header>
+
+        <nav class="admin-segmented" aria-label="Community moderation sections">
+            @foreach($tabs as $value => $label)<button wire:click="$set('tab','{{ $value }}')" class="{{ $tab === $value ? 'is-active' : '' }}">{{ $label }}</button>@endforeach
+        </nav>
+
+        @if(session('success'))<div class="admin-moderation-notice">{{ session('success') }}</div>@endif
+
+        <section class="admin-card-list" aria-label="Community moderation queue">
+            @if($tab === 'posts')
+                @forelse($posts as $post)
+                    <article class="admin-moderation-card" wire:key="post-{{ $post->id }}">
+                        <div class="admin-card-meta">
+                            <div><span class="admin-status {{ $post->visibility === 'public' ? 'admin-status-success' : 'admin-status-warning' }}">{{ $post->visibility === 'public' ? 'Live' : 'Hidden' }}</span>@if($post->is_featured)<span class="admin-featured-label">Featured</span>@endif</div>
+                            <time datetime="{{ ($post->published_at ?? $post->created_at)->toDateString() }}">{{ ($post->published_at ?? $post->created_at)->format('M j, Y · g:i A') }}</time>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="admin-review-source"><p>{{ $post->product->name }}</p><strong>{{ $post->user->name }}</strong><span>Verified owner story</span></div>
+                            <blockquote>{{ $post->caption ?: 'This story was published without a caption.' }}</blockquote>
+                        </div>
+                        <footer class="admin-card-actions">
+                            <span>{{ $post->likes_count }} likes · {{ $post->comments_count }} comments</span>
+                            <div>
+                                @if($post->visibility === 'public')
+                                    <a href="{{ route('community.show', $post) }}" target="_blank" rel="noopener">Open story</a>
+                                    <button wire:click="feature({{ $post->id }})">{{ $post->is_featured ? 'Unfeature' : 'Feature' }}</button>
+                                    <button wire:click="removePost({{ $post->id }})" wire:confirm="Remove this post from the public gallery?" class="is-danger">Remove</button>
+                                @else
+                                    <button wire:click="restorePost({{ $post->id }})" class="is-primary">Restore post</button>
+                                @endif
+                            </div>
+                        </footer>
+                    </article>
+                @empty<div class="admin-moderation-empty"><strong>No community posts yet</strong><p>Published stories will appear here.</p></div>@endforelse
+            @elseif($tab === 'comments')
+                @forelse($comments as $comment)
+                    <article class="admin-moderation-card is-compact" wire:key="comment-{{ $comment->id }}">
+                        <div class="admin-card-meta"><div><span class="admin-status admin-status-success">Published</span><strong>{{ $comment->user->name }}</strong></div><time>{{ $comment->created_at->format('M j, Y · g:i A') }}</time></div>
+                        <div class="admin-card-body"><div class="admin-review-source"><p>Story #{{ $comment->post_id }}</p><span>Community comment</span></div><blockquote>{{ $comment->body }}</blockquote></div>
+                        <footer class="admin-card-actions"><span>Visible to the community</span><button wire:click="hideComment({{ $comment->id }})" wire:confirm="Hide this comment?" class="is-danger">Hide comment</button></footer>
+                    </article>
+                @empty<div class="admin-moderation-empty"><strong>No published comments</strong><p>Community conversations will appear here.</p></div>@endforelse
+            @else
+                @forelse($reports as $report)
+                    <article class="admin-moderation-card is-report" wire:key="report-{{ $report->id }}">
+                        <div class="admin-card-meta"><div><span class="admin-status admin-status-warning">{{ str($report->reason)->title() }}</span><strong>{{ $report->reporter->name }}</strong></div><time>{{ $report->created_at->diffForHumans() }}</time></div>
+                        <div class="admin-card-body"><div class="admin-review-source"><p>{{ str($report->reportable_type)->title() }} #{{ $report->reportable_id }}</p><span>Reported content</span></div><blockquote>{{ $report->details ?: 'The reporter did not provide additional details.' }}</blockquote></div>
+                        <footer class="admin-card-actions"><span>Open report</span><button wire:click="resolveReport({{ $report->id }})" class="is-primary">Mark resolved</button></footer>
+                    </article>
+                @empty<div class="admin-moderation-empty"><strong>No open reports</strong><p>The community queue is clear.</p></div>@endforelse
+            @endif
+        </section>
+    </main>
+</div>

@@ -1,6 +1,6 @@
-<div class="mx-auto w-full max-w-[1500px] space-y-5" x-data>
-    <header class="flex flex-col gap-4 rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-4 shadow-admin-panel sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div class="flex min-w-0 items-center gap-3">
+<div class="admin-record-editor" x-data>
+    <header class="admin-editor-topbar">
+        <div class="admin-editor-identity">
             <a href="{{ route('admin.brands.index') }}"
                 class="btn btn-square btn-sm shrink-0 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] shadow-admin-control hover:bg-[var(--admin-surface-soft)]"
                 aria-label="Back to brands">
@@ -9,17 +9,17 @@
                 </svg>
             </a>
             <div class="min-w-0">
-                <p class="text-[10px] font-medium uppercase tracking-[0.12em] text-base-content/40">Catalog · Brands</p>
-                <h1 class="mt-0.5 truncate text-lg font-semibold tracking-tight sm:text-xl">
+                <p class="admin-editor-breadcrumb">Catalog / Brands</p>
+                <h1>
                     {{ $brand ? 'Edit brand' : 'New brand' }}
                 </h1>
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-2">
-            <a href="{{ route('admin.brands.index') }}" class="btn btn-ghost btn-sm h-10 min-h-10 rounded-xl px-4">Cancel</a>
+        <div class="admin-editor-actions">
+            <a href="{{ route('admin.brands.index') }}" class="admin-editor-cancel">Cancel</a>
             <button type="submit" form="brand-form" wire:loading.attr="disabled" wire:target="save"
-                class="btn btn-primary btn-sm h-10 min-h-10 min-w-32 rounded-xl px-5 shadow-[0_10px_24px_rgba(255,122,0,.2)]">
+                class="admin-editor-save">
                 <span wire:loading wire:target="save" class="loading loading-spinner loading-xs"></span>
                 <span wire:loading.remove wire:target="save">{{ $brand ? 'Save changes' : 'Create brand' }}</span>
                 <span wire:loading wire:target="save">Saving...</span>
@@ -27,8 +27,7 @@
         </div>
     </header>
 
-    <form id="brand-form" wire:submit="save"
-        class="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <form id="brand-form" wire:submit="save" class="admin-editor-canvas admin-editor-layout">
         <x-admin.form-section title="Brand information" description="Identity and market positioning">
             <x-slot:icon>
                 <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -66,7 +65,7 @@
             </div>
         </x-admin.form-section>
 
-        <aside class="space-y-5 lg:sticky lg:top-20">
+        <aside class="admin-editor-rail">
             <x-admin.form-section title="Brand mark" description="Square or horizontal logo">
                 <div class="grid aspect-[16/10] place-items-center overflow-hidden rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface-sunken)] p-4 shadow-inner">
                     @if ($logo)
@@ -100,7 +99,7 @@
                 </x-admin.switch-row>
             </x-admin.form-section>
 
-            <section class="relative overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 shadow-admin-panel">
+            <section class="admin-editor-preview relative overflow-hidden border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5">
                 <span class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"></span>
                 <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-base-content/40">Preview</p>
                 <div class="mt-4 flex items-center gap-3">

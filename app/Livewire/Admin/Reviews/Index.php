@@ -12,6 +12,11 @@ class Index extends Component
 
     public string $status = 'pending';
 
+    public function updatedStatus(): void
+    {
+        $this->resetPage();
+    }
+
     public function approve(Review $review): void
     {
         $review->update(['status' => 'approved']);

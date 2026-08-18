@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-[#f6f4f0] py-10 sm:py-16"><main class="koku-shell max-w-5xl">
     <a href="{{ route('community.index') }}" class="text-xs text-[var(--koku-indigo)]">← Community</a>
     <section class="mt-6 overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_70px_rgba(31,38,53,.08)]">
-        <header class="bg-[var(--koku-indigo-deep)] px-6 py-9 text-white sm:px-10"><span class="text-[10px] uppercase tracking-[.17em] text-white/50">Verified owners</span><h1 class="mt-3 font-serif text-4xl tracking-[-.04em]">Share a wrist story.</h1><p class="mt-3 text-xs text-white/55">A personal moment, reviewed with care before it joins the community.</p></header>
+        <header class="bg-[var(--koku-indigo-deep)] px-6 py-9 text-white sm:px-10"><span class="text-[10px] uppercase tracking-[.17em] text-white/50">Verified owners</span><h1 class="mt-3 font-serif text-4xl tracking-[-.04em]">Share a wrist story.</h1><p class="mt-3 text-xs text-white/55">A personal moment shared directly with the community.</p></header>
         @if($eligibleItems->isEmpty())
             <div class="p-10 text-center"><h2 class="font-serif text-2xl">No eligible watches yet.</h2><p class="mt-2 text-sm text-[var(--koku-muted)]">You can share after an order has been delivered.</p><a href="{{ route('orders.index') }}" class="mt-6 inline-block rounded-full bg-[var(--koku-indigo)] px-5 py-3 text-xs text-white">View orders</a></div>
         @else
@@ -17,7 +17,7 @@
                 <div><label class="koku-field-label">Your story</label><textarea wire:model="caption" rows="5" maxlength="2000" class="koku-field resize-none rounded-xl" placeholder="Where were you? What does this watch mean to you?"></textarea></div>
                 <div><label class="koku-field-label">Location <span class="normal-case tracking-normal">(optional)</span></label><input wire:model="location" class="koku-field rounded-xl" placeholder="Yangon, Myanmar"></div>
                 <div><label class="koku-field-label">Photos</label><label class="flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--koku-line)] bg-[#f8f7f4] px-6 py-9 text-center"><svg class="size-7 text-[var(--koku-indigo)]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 8h3l2-2h6l2 2h3v11H4V8Z"/><circle cx="12" cy="13" r="3"/></svg><span class="mt-3 text-sm font-medium">Choose 1–5 images</span><span class="mt-1 text-xs text-[var(--koku-muted)]">JPG, PNG or WebP · 5 MB each</span><input type="file" wire:model="photos" multiple accept="image/jpeg,image/png,image/webp" class="sr-only"></label>@error('photos')<p class="koku-field-error">{{ $message }}</p>@enderror @error('photos.*')<p class="koku-field-error">{{ $message }}</p>@enderror @if(count($photos))<div class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">@foreach($photos as $photo)<img src="{{ $photo->temporaryUrl() }}" alt="Post preview" class="aspect-square w-full rounded-xl object-cover">@endforeach</div>@endif</div>
-                <button class="w-fit rounded-full bg-[var(--koku-indigo)] px-7 py-3.5 text-xs font-medium text-white">Send for approval</button>
+                <button class="w-fit rounded-full bg-[var(--koku-indigo)] px-7 py-3.5 text-xs font-medium text-white">Publish story</button>
             </form>
         @endif
     </section>

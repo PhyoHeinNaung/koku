@@ -37,6 +37,23 @@ class Index extends Component
 
     public array $selected = [];
 
+    public ?int $selectedProductId = null;
+
+    public bool $drawerOpen = false;
+
+    public function openProduct(int $productId): void
+    {
+        Product::findOrFail($productId);
+        $this->selectedProductId = $productId;
+        $this->drawerOpen = true;
+    }
+
+    public function closeProduct(): void
+    {
+        $this->drawerOpen = false;
+        $this->selectedProductId = null;
+    }
+
     public function updated(string $property): void
     {
         if (in_array($property, [
@@ -212,6 +229,10 @@ class Index extends Component
             'incomplete' => Product::whereDoesntHave('variants', $activeDefault)->count(),
         ];
 
+        $selectedProduct = $this->selectedProductId
+            ? Product::with(['brand', 'category', 'variants.images'])->find($this->selectedProductId)
+            : null;
+
         return view('livewire.admin.products.index', [
             'products' => $products->paginate(10),
             'brands' => Brand::orderBy('name')->get(['id', 'name']),
@@ -225,6 +246,7 @@ class Index extends Component
                 || $this->watchType !== 'all'
                 || $this->featured !== 'all'
                 || $this->sort !== 'newest',
+            'selectedProduct' => $selectedProduct,
         ])
             ->layout('layouts.admin');
     }

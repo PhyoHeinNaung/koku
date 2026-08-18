@@ -1,1 +1,67 @@
-<div class="space-y-4"><div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p class="text-[10px] font-semibold uppercase tracking-[.16em] text-accent">Community trust</p><h1 class="mt-2 text-2xl font-semibold">Review moderation</h1><p class="mt-1 text-xs text-base-content/45">Approve feedback, or contact customers before publishing.</p></div><select wire:model.live="status" class="select select-sm rounded-xl border-[var(--admin-border)] bg-[var(--admin-surface-raised)] text-xs"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="all">All reviews</option></select></div>@if(session('success'))<div class="alert rounded-xl border border-success/20 bg-success/10 text-xs text-success">{{ session('success') }}</div>@endif @if($reviews->isEmpty())<div class="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] p-12 text-center text-sm text-base-content/45">No {{ $status === 'all' ? '' : $status }} reviews found.</div>@else<div class="grid gap-4 xl:grid-cols-2">@foreach($reviews as $review)<article wire:key="review-{{ $review->id }}" class="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface-raised)] p-5 shadow-admin-control"><div class="flex items-start justify-between gap-4"><div><p class="text-sm font-semibold">{{ $review->product->name }}</p><p class="mt-1 text-[10px] text-base-content/40">{{ $review->user->name }} · {{ $review->created_at->format('M j, Y') }}</p></div><span class="badge badge-sm rounded-lg border-0 bg-accent/10 text-[9px] uppercase text-accent">{{ $review->status }}</span></div><div class="mt-4 text-amber-500">@for($star=1;$star<=5;$star++){{ $review->rating >= $star ? '★' : '☆' }}@endfor</div>@if($review->comment)<p class="mt-3 text-xs leading-6 text-base-content/65">{{ $review->comment }}</p>@endif @if($review->images->isNotEmpty())<div class="mt-4 flex gap-2">@foreach($review->images as $image)<img src="{{ Storage::url($image->image_path) }}" alt="Review evidence" class="size-20 rounded-xl object-cover">@endforeach</div>@endif<div class="mt-5 flex flex-wrap items-center gap-2 border-t border-[var(--admin-border)] pt-4"><a href="mailto:{{ $review->user->email }}?subject={{ rawurlencode('About your review of '.$review->product->name) }}" class="btn btn-sm rounded-lg border-[var(--admin-border)] bg-transparent text-xs">Contact customer</a>@if($review->status !== 'approved')<button wire:click="approve({{ $review->id }})" class="btn btn-sm rounded-lg border-0 bg-success text-xs text-success-content">Approve</button>@endif @if($review->status !== 'rejected')<button wire:click="reject({{ $review->id }})" wire:confirm="Reject this review?" class="btn btn-sm rounded-lg border-0 bg-error/10 text-xs text-error">Reject</button>@endif</div></article>@endforeach</div><div>{{ $reviews->links() }}</div>@endif</div>
+@php
+    $statusOptions = ['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected', 'all' => 'All reviews'];
+@endphp
+
+<div class="admin-page admin-moderation-page">
+    <main class="admin-moderation-shell">
+        <header class="admin-moderation-head">
+            <div>
+                <p class="admin-moderation-eyebrow">Customer trust</p>
+                <h1 class="admin-page-title">Review moderation</h1>
+                <p class="admin-moderation-intro">Read the full customer submission and decide what appears on product pages.</p>
+            </div>
+            <div class="admin-moderation-total">
+                <strong>{{ number_format($reviews->total()) }}</strong>
+                <span>{{ $status === 'all' ? 'reviews' : $status.' reviews' }}</span>
+            </div>
+        </header>
+
+        <nav class="admin-segmented" aria-label="Review status">
+            @foreach($statusOptions as $value => $label)
+                <button wire:click="$set('status', '{{ $value }}')" class="{{ $status === $value ? 'is-active' : '' }}">{{ $label }}</button>
+            @endforeach
+        </nav>
+
+        @if(session('success'))
+            <div class="admin-moderation-notice">{{ session('success') }}</div>
+        @endif
+
+        <section class="admin-card-list" aria-label="Reviews">
+            @forelse($reviews as $review)
+                <article class="admin-moderation-card" wire:key="review-{{ $review->id }}">
+                    <div class="admin-card-meta">
+                        <div>
+                            <span class="admin-status {{ $review->status === 'approved' ? 'admin-status-success' : ($review->status === 'rejected' ? 'admin-status-warning' : 'admin-status-muted') }}">{{ str($review->status)->title() }}</span>
+                            <time datetime="{{ $review->created_at->toDateString() }}">{{ $review->created_at->format('M j, Y') }}</time>
+                        </div>
+                        <div class="admin-stars" aria-label="{{ $review->rating }} out of 5 stars">{{ str_repeat('★', $review->rating) }}<span>{{ str_repeat('☆', 5 - $review->rating) }}</span></div>
+                    </div>
+
+                    <div class="admin-card-body">
+                        <div class="admin-review-source">
+                            <p>{{ $review->product->name }}</p>
+                            <strong>{{ $review->user->name }}</strong>
+                            <a href="mailto:{{ $review->user->email }}">{{ $review->user->email }}</a>
+                        </div>
+                        <blockquote>{{ $review->comment ?: 'This customer submitted a rating without written feedback.' }}</blockquote>
+                        @if($review->images->isNotEmpty())
+                            <p class="admin-attachment-note">{{ $review->images->count() }} {{ Str::plural('attachment', $review->images->count()) }} included with this review</p>
+                        @endif
+                    </div>
+
+                    <footer class="admin-card-actions">
+                        <a href="mailto:{{ $review->user->email }}?subject={{ rawurlencode('About your review of '.$review->product->name) }}">Contact customer</a>
+                        <div>
+                            @if($review->status !== 'rejected')<button wire:click="reject({{ $review->id }})" wire:confirm="Reject this review?" class="is-danger">Reject</button>@endif
+                            @if($review->status !== 'approved')<button wire:click="approve({{ $review->id }})" class="is-primary">Approve review</button>@endif
+                        </div>
+                    </footer>
+                </article>
+            @empty
+                <div class="admin-moderation-empty"><strong>Queue clear</strong><p>No {{ $status === 'all' ? '' : $status }} reviews need attention.</p></div>
+            @endforelse
+        </section>
+
+        <div class="admin-card-pagination">{{ $reviews->links() }}</div>
+    </main>
+</div>

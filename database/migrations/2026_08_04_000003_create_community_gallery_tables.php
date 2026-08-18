@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('order_item_id')->constrained()->restrictOnDelete();
             $table->text('caption')->nullable();
             $table->string('location', 150)->nullable();
-            $table->string('status', 20)->default('pending');
+            $table->string('status', 20)->default('published');
             $table->string('visibility', 20)->default('public');
             $table->boolean('is_featured')->default(false);
             $table->unsignedInteger('likes_count')->default(0);
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->unsignedInteger('height')->nullable();
             $table->string('alt_text')->nullable();
             $table->unsignedSmallInteger('sort_order')->default(0);
-            $table->string('status', 20)->default('pending');
+            $table->string('status', 20)->default('published');
             $table->timestamps();
             $table->index(['post_id', 'sort_order']);
         });

@@ -273,6 +273,16 @@ class Index extends Component
         $this->dispatch('admin-notify', type: 'success', message: "{$count} shipping records updated.");
     }
 
+    public function bulkUpdateStatus(bool $active): void
+    {
+        $this->bulkSetActive($active);
+    }
+
+    public function saveEditor(): void
+    {
+        $this->editorType === 'zone' ? $this->saveZone() : $this->saveLocation();
+    }
+
     public function bulkDelete(): void
     {
         if ($this->selected === []) {

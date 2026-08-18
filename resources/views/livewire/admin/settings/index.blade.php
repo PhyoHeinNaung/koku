@@ -1,4 +1,4 @@
-<div class="mx-auto w-full max-w-[1500px]" x-data="{ tab: 'identity' }">
+<div class="admin-page admin-workflow block" x-data="{ tab: 'identity' }">
     <form wire:submit="save" class="space-y-6">
         <x-admin.page-header title="Store settings" />
 
