@@ -1,59 +1,268 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <h1 align="center">KOKU</h1>
+  <p align="center">
+    A modern B2C watch E-Commerce platform built with Laravel.
+  </p>
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Laravel</strong> •
+  <strong>PHP</strong> •
+  <strong>MySQL</strong> •
+  <strong>Tailwind CSS</strong> •
+  <strong>Stripe</strong>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## About Koku
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Koku is a B2C watch E-Commerce website developed using Laravel, PHP, MySQL, JavaScript and Tailwind CSS.
 
-## Learning Laravel
+The platform allows customers to discover and purchase watches through product browsing, search, filtering, wishlists, cart and checkout functionality. Stripe is integrated for secure online payment processing.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Koku also includes additional features such as an AI Shopping Assistant, Community Wrist Gallery, product reviews, order tracking and an administrative management interface.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Requirements
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Before running the project, ensure the following software is installed:
 
-### Premium Partners
+- PHP 8.x
+- Composer
+- Node.js and npm
+- MySQL
+- XAMPP or equivalent local server
+- Stripe CLI
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## Project Setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Extract the Project
 
-## Code of Conduct
+Extract the submitted project ZIP file and open a terminal inside the project directory.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Install PHP Dependencies
 
-## Security Vulnerabilities
+```bash
+composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Install Frontend Dependencies
 
-## License
+```bash
+npm install
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. Create Environment File
+
+On Windows:
+
+```bash
+copy .env.example .env
+```
+
+Alternatively, manually copy `.env.example` and rename the copied file to `.env`.
+
+### 5. Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+### 6. Create the Database
+
+Create a MySQL database named:
+
+```text
+koku
+```
+
+### 7. Import the Database
+
+Import the provided SQL file:
+
+```text
+koku_database.sql
+```
+
+The SQL file contains the database structure and sample data required for testing the system.
+
+### 8. Configure Database Connection
+
+Update the database configuration in `.env` if required:
+
+```env
+DB_DATABASE=koku
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+## Running the Application
+
+The application requires several services to run during testing.
+
+### Terminal 1 — Laravel Server
+
+```bash
+php artisan serve
+```
+
+### Terminal 2 — Frontend Development Server
+
+```bash
+npm run dev
+```
+
+### Terminal 3 — Queue Worker
+
+```bash
+php artisan queue:work
+```
+
+The queue worker is required for queued background tasks such as post-payment email processing.
+
+Once the application is running, open:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Stripe Webhook Setup
+
+Stripe is used in test mode for online payment processing.
+
+### 1. Login to Stripe CLI
+
+```bash
+stripe login
+```
+
+### 2. Forward Stripe Webhooks
+
+Open another terminal and run:
+
+```bash
+stripe listen --forward-to http://127.0.0.1:8000/stripe/webhook
+```
+
+Stripe CLI will generate a webhook signing secret similar to:
+
+```text
+whsec_xxxxxxxxx
+```
+
+Copy this value and configure it in `.env`:
+
+```env
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxx
+```
+
+Stripe test API credentials must also be configured in the `.env` file.
+
+---
+
+## Sample Login Accounts
+
+The following accounts are included in the provided sample database for system testing.
+
+### Administrator
+
+| Field    | Value             |
+| -------- | ----------------- |
+| Email    | `admin@koku.test` |
+| Password | `password`        |
+
+### Customer
+
+| Field    | Value                |
+| -------- | -------------------- |
+| Email    | `customer@koku.test` |
+| Password | `password`           |
+
+> These credentials are provided for academic testing purposes only.
+
+---
+
+## Stripe Test Payment
+
+Stripe should be used in **Test Mode** while evaluating the system.
+
+| Field       | Test Value               |
+| ----------- | ------------------------ |
+| Card Number | `4242 4242 4242 4242`    |
+| Expiry Date | Any future date          |
+| CVC         | Any valid 3-digit number |
+| Postal Code | Any valid value          |
+
+---
+
+## Main Features
+
+### Customer Features
+
+- Product browsing, searching, filtering and sorting
+- Detailed watch and variant information
+- Shopping cart
+- Wishlist
+- Coupon application
+- Guest checkout
+- Registered customer checkout
+- Stripe online payment
+- Order confirmation
+- Order history and tracking
+- Product reviews
+- Community Wrist Gallery
+- AI Shopping Assistant
+- Profile and address management
+
+### Administration Features
+
+- Admin dashboard
+- Product management
+- Product variant management
+- Brand and category management
+- Inventory management
+- Order management
+- Customer management
+- Coupon management
+- Review management
+- Community content management
+- Reports and analytics
+
+---
+
+## Technologies Used
+
+| Technology    | Purpose                           |
+| ------------- | --------------------------------- |
+| Laravel       | Backend web application framework |
+| PHP           | Server-side programming           |
+| MySQL         | Relational database               |
+| JavaScript    | Client-side functionality         |
+| Tailwind CSS  | User interface styling            |
+| Stripe        | Online payment processing         |
+| Stripe CLI    | Local webhook testing             |
+| Laravel Queue | Background job processing         |
+
+---
+
+## Submission Notes
+
+This project is submitted as part of the **Unit 51: E-Commerce and Strategy** assignment.
+
+The submitted project package includes:
+
+- Laravel source code
+- SQL database file
+- Sample database records
+- Administrator test account
+- Customer test account
+- Environment configuration example
+- Project setup and testing instructions
