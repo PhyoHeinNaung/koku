@@ -1,48 +1,78 @@
-<p align="center">
-  <h1 align="center">KOKU</h1>
-  <p align="center">
-    A modern B2C watch E-Commerce platform built with Laravel.
-  </p>
-</p>
+# KOKU Watch Store
 
-<p align="center">
-  <strong>Laravel</strong> •
-  <strong>PHP</strong> •
-  <strong>MySQL</strong> •
-  <strong>Tailwind CSS</strong> •
-  <strong>Stripe</strong>
-</p>
+KOKU is a B2C watch e-commerce application developed for the **Unit 51: E-Commerce and Strategy** assignment. The system provides a customer-facing online watch store and an administration area for managing products, orders, customers, inventory, promotions, reviews, community content, and store operations.
 
 ---
 
-## About Koku
+## Main Features
 
-Koku is a B2C watch E-Commerce website developed using Laravel, PHP, MySQL, JavaScript and Tailwind CSS.
+### Customer Features
 
-The platform allows customers to discover and purchase watches through product browsing, search, filtering, wishlists, cart and checkout functionality. Stripe is integrated for secure online payment processing.
+- Browse, search, filter, and sort watches
+- View watch details, variants, images, stock, and reviews
+- Manage shopping cart and wishlist
+- Apply coupons and select shipping options
+- Complete guest or registered-customer checkout
+- Make test payments through Stripe
+- View order history and order status
+- Manage profile information and delivery addresses
+- Publish verified-purchase product reviews
+- Browse and contribute to the Community Wrist Gallery
 
-Koku also includes additional features such as an AI Shopping Assistant, Community Wrist Gallery, product reviews, order tracking and an administrative management interface.
+### Administrator Features
+
+- Dashboard with store information
+- Product and product variant management
+- Brand and category management
+- Inventory management
+- Order management
+- Customer management
+- Coupon and shipping management
+- Product review management
+- Community content moderation
+- Reports and analytics
+- Store settings
+
+---
+
+## Technology Stack
+
+| Technology      | Purpose                              |
+| --------------- | ------------------------------------ |
+| PHP 8.2+        | Server-side programming              |
+| Laravel 12      | Backend web application framework    |
+| Livewire 4      | Dynamic user interface functionality |
+| Alpine.js       | Lightweight client-side interactions |
+| Tailwind CSS 4  | User interface styling               |
+| DaisyUI         | UI components                        |
+| MySQL           | Relational database                  |
+| Vite            | Frontend asset building              |
+| Node.js and npm | Frontend dependency management       |
+| Stripe          | Test payment processing              |
 
 ---
 
 ## Requirements
 
-Before running the project, ensure the following software is installed:
+Before setting up the project, ensure the following software is installed:
 
-- PHP 8.x
+- PHP 8.2 or later with the required Laravel extensions
 - Composer
 - Node.js and npm
 - MySQL
-- XAMPP or equivalent local server
-- Stripe CLI
+- XAMPP, WAMP, Laragon, or an equivalent local server
+- phpMyAdmin or another MySQL database management tool
+- Stripe CLI for local Stripe webhook testing
 
 ---
 
-## Project Setup
+# Project Setup
+
+The submitted project includes a configured `.env` file and an exported MySQL database named `koku_database.sql`. The database contains the required database structure, sample data, and testing accounts.
 
 ### 1. Extract the Project
 
-Extract the submitted project ZIP file and open a terminal inside the project directory.
+Extract the submitted ZIP file and open a terminal in the project directory.
 
 ### 2. Install PHP Dependencies
 
@@ -56,212 +86,305 @@ composer install
 npm install
 ```
 
-### 4. Create Environment File
+### 4. Start MySQL
 
-On Windows:
+Start **MySQL** using XAMPP or your preferred local server.
 
-```bash
-copy .env.example .env
-```
+If phpMyAdmin is being served through XAMPP, start **Apache** as well.
 
-Alternatively, manually copy `.env.example` and rename the copied file to `.env`.
+### 5. Create the Database
 
-### 5. Generate Application Key
-
-```bash
-php artisan key:generate
-```
-
-### 6. Create the Database
-
-Create a MySQL database named:
+Open phpMyAdmin and create a new database named:
 
 ```text
 koku
 ```
 
-### 7. Import the Database
+### 6. Import the Database
 
-Import the provided SQL file:
+Select the `koku` database in phpMyAdmin and import the provided:
 
 ```text
 koku_database.sql
 ```
 
-The SQL file contains the database structure and sample data required for testing the system.
+The SQL file contains the database structure, sample records, and testing accounts required for system evaluation.
 
-### 8. Configure Database Connection
+> **Important:** Do not run `php artisan migrate:fresh` after importing the provided database because this will delete the included sample data and testing accounts.
 
-Update the database configuration in `.env` if required:
+### 7. Database Connection
 
-```env
-DB_DATABASE=koku
-DB_USERNAME=root
-DB_PASSWORD=
+The included `.env` file is already configured to use the `koku` database.
+
+If a different local MySQL configuration is used, update the database connection settings in `.env` as required.
+
+### 8. Clear Laravel Configuration Cache
+
+```bash
+php artisan optimize:clear
+```
+
+### 9. Create the Storage Link
+
+```bash
+php artisan storage:link
+```
+
+This allows publicly accessible uploaded images to be served from Laravel storage.
+
+### 10. Build the Frontend Assets
+
+```bash
+npm run build
 ```
 
 ---
 
-## Running the Application
-
-The application requires several services to run during testing.
+# Running the Application
 
 ### Terminal 1 — Laravel Server
+
+Run:
 
 ```bash
 php artisan serve
 ```
 
-### Terminal 2 — Frontend Development Server
-
-```bash
-npm run dev
-```
-
-### Terminal 3 — Queue Worker
-
-```bash
-php artisan queue:work
-```
-
-The queue worker is required for queued background tasks such as post-payment email processing.
-
-Once the application is running, open:
+The application will normally be available at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
----
+### Terminal 2 — Vite Development Server
 
-## Stripe Webhook Setup
-
-Stripe is used in test mode for online payment processing.
-
-### 1. Login to Stripe CLI
+If frontend development mode is required, run:
 
 ```bash
-stripe login
+npm run dev
 ```
 
-### 2. Forward Stripe Webhooks
+> If the frontend assets have already been built using `npm run build`, running `npm run dev` is not normally required for basic evaluation.
 
-Open another terminal and run:
+### Terminal 3 — Queue Worker
+
+Run:
 
 ```bash
-stripe listen --forward-to http://127.0.0.1:8000/stripe/webhook
+php artisan queue:work
 ```
 
-Stripe CLI will generate a webhook signing secret similar to:
+The queue worker processes queued background tasks used by the application.
 
-```text
-whsec_xxxxxxxxx
-```
-
-Copy this value and configure it in `.env`:
-
-```env
-STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxx
-```
-
-Stripe test API credentials must also be configured in the `.env` file.
+Keep the required terminals running while evaluating the system.
 
 ---
 
-## Sample Login Accounts
+# Sample Login Accounts
 
-The following accounts are included in the provided sample database for system testing.
+The following sample accounts are included in `koku_database.sql` for academic testing.
 
-### Administrator
+## Administrator
 
 | Field    | Value             |
 | -------- | ----------------- |
 | Email    | `admin@koku.test` |
 | Password | `password`        |
 
-### Customer
+After signing in, access the administration area at:
+
+```text
+http://127.0.0.1:8000/admin
+```
+
+## Customer
 
 | Field    | Value                |
 | -------- | -------------------- |
 | Email    | `customer@koku.test` |
 | Password | `password`           |
 
-> These credentials are provided for academic testing purposes only.
+> These accounts are provided only for local academic testing.
 
 ---
 
-## Stripe Test Payment
+# Stripe Test Payment Setup
 
-Stripe should be used in **Test Mode** while evaluating the system.
+Stripe is integrated for online payment processing and should be used in **Test Mode** during evaluation.
 
-| Field       | Test Value               |
-| ----------- | ------------------------ |
-| Card Number | `4242 4242 4242 4242`    |
-| Expiry Date | Any future date          |
-| CVC         | Any valid 3-digit number |
-| Postal Code | Any valid value          |
+The required Stripe test API credentials are configured in the included `.env` file for academic testing.
 
----
+The Stripe configuration uses:
 
-## Main Features
+```env
+STRIPE_KEY=pk_test_...
+STRIPE_SECRET=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
 
-### Customer Features
+> The included Stripe credentials are test-mode credentials and must not be used for real transactions.
 
-- Product browsing, searching, filtering and sorting
-- Detailed watch and variant information
-- Shopping cart
-- Wishlist
-- Coupon application
-- Guest checkout
-- Registered customer checkout
-- Stripe online payment
-- Order confirmation
-- Order history and tracking
-- Product reviews
-- Community Wrist Gallery
-- Profile and address management
+## Stripe Test Card
 
-### Administration Features
+Stripe's standard successful test card can be used:
 
-- Admin dashboard
-- Product management
-- Product variant management
-- Brand and category management
-- Inventory management
-- Order management
-- Customer management
-- Coupon management
-- Review management
-- Community content management
-- Reports and analytics
+| Field       | Test Value                   |
+| ----------- | ---------------------------- |
+| Card Number | `4242 4242 4242 4242`        |
+| Expiry Date | Any future date              |
+| CVC         | Any valid three-digit number |
+| Postal Code | Any valid value              |
 
 ---
 
-## Technologies Used
+## Stripe Webhook Testing
 
-| Technology    | Purpose                           |
-| ------------- | --------------------------------- |
-| Laravel       | Backend web application framework |
-| PHP           | Server-side programming           |
-| MySQL         | Relational database               |
-| JavaScript    | Client-side functionality         |
-| Tailwind CSS  | User interface styling            |
-| Stripe        | Online payment processing         |
-| Stripe CLI    | Local webhook testing             |
-| Laravel Queue | Background job processing         |
+Stripe CLI is required to forward Stripe webhook events to the locally running application.
+
+### 1. Authenticate Stripe CLI
+
+Open a separate terminal and run:
+
+```bash
+stripe login
+```
+
+This authenticates the locally installed Stripe CLI with a Stripe account.
+
+### 2. Start Webhook Forwarding
+
+Run:
+
+```bash
+stripe listen --forward-to http://127.0.0.1:8000/stripe/webhook
+```
+
+Stripe CLI will display a webhook signing secret beginning with:
+
+```text
+whsec_
+```
+
+Update `STRIPE_WEBHOOK_SECRET` in `.env` with the signing secret generated by the Stripe CLI:
+
+```env
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+Then clear the Laravel configuration cache:
+
+```bash
+php artisan optimize:clear
+```
+
+Keep the Stripe CLI terminal running while testing payment and webhook functionality.
+
+> **Note:** Stripe CLI authentication is separate from the Stripe test API credentials configured in `.env`.
 
 ---
 
-## Submission Notes
+# Manual Testing Guide
 
-This project is submitted as part of the **Unit 51: E-Commerce and Strategy** assignment.
+## Customer
 
-The submitted project package includes:
+1. Open the home page and browse the available watches.
+2. Test product search, filtering, sorting, and pagination.
+3. Open a watch and select an available product variant.
+4. Add a product to the shopping cart.
+5. Test adding and removing products from the wishlist.
+6. Update product quantities in the cart and verify the totals.
+7. Continue to checkout and provide or select the required delivery information.
+8. Select a shipping method and apply a coupon where applicable.
+9. Complete checkout using a Stripe test payment.
+10. Verify the order confirmation and order information.
+11. Sign in using the sample customer account and review orders, addresses, and profile information.
+12. Test product reviews and the Community Wrist Gallery.
 
-- Laravel source code
-- SQL database file
+## Administrator
+
+1. Sign in using the administrator testing account.
+2. Open the administration area at `/admin`.
+3. Review the dashboard.
+4. Create or edit brands, categories, products, and product variants.
+5. Review and update inventory.
+6. Review orders and update an order status.
+7. Test customer, coupon, and shipping management.
+8. Moderate product reviews and Community Wrist Gallery content.
+9. Review reports and analytics.
+10. Review or update store settings.
+11. Confirm that a normal customer cannot access the administration area.
+
+---
+
+# Troubleshooting
+
+### Database Connection Error
+
+Ensure MySQL is running and verify the database configuration in `.env`.
+
+### Tables or Sample Accounts Are Missing
+
+Ensure `koku_database.sql` has been imported into the `koku` database.
+
+### Styles or Scripts Are Missing
+
+Run:
+
+```bash
+npm install
+npm run build
+```
+
+### Uploaded Images Do Not Load
+
+Run:
+
+```bash
+php artisan storage:link
+```
+
+### Environment Changes Are Not Being Applied
+
+Run:
+
+```bash
+php artisan optimize:clear
+```
+
+Then restart the Laravel server.
+
+### Stripe Payment or Webhook Fails
+
+Verify the Stripe test credentials in `.env`.
+
+For local webhook testing, ensure Stripe CLI webhook forwarding is running and that the current `whsec_...` signing secret is configured as `STRIPE_WEBHOOK_SECRET`.
+
+### Queue Jobs Are Not Being Processed
+
+Ensure the Laravel queue worker is running:
+
+```bash
+php artisan queue:work
+```
+
+---
+
+# Submission Contents
+
+The submitted project package contains:
+
+- Laravel application source code
+- Composer dependency files
+- npm dependency files
+- `koku_database.sql`
 - Sample database records
-- Administrator test account
-- Customer test account
-- Environment configuration example
+- Administrator testing account
+- Customer testing account
+- Configured `.env` file for local academic testing
 - Project setup and testing instructions
+
+---
+
+## Security Notice
+
+The sample accounts and Stripe test credentials included with this project are provided solely for local academic evaluation. All included payment credentials operate in Stripe Test Mode and cannot process real payments.
